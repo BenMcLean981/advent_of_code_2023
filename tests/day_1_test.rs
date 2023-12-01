@@ -31,6 +31,11 @@ fn get_calibration_value_returns_last_spelt_digit() {
 }
 
 #[test]
+fn get_calibration_value_returns_first_spelt_digit_with_overlap() {
+    assert_eq!(87, day_1::solution::get_calibration_value("trebeightwo7uchet"));
+}
+
+#[test]
 fn add_lines_sums_calibration_numbers_of_lines() {
     let lines = vec![
         "1abc2".to_string(),
