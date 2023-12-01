@@ -5,7 +5,8 @@ pub fn add_two(n: i32) -> i32 {
 }
 
 fn main() {
-    println!("Hello, world!");
+    println!("Welcome to Advent of Code 2023!");
+    println!();
 
-    day_1::solution::add(10, 40);
+    day_1::solution::solve();
 }
