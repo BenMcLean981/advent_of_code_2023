@@ -3,7 +3,7 @@ use std::str::FromStr;
 use crate::{day_2::game::Game, utils::file_utils};
 
 pub fn solve() {
-    let filename = "src/day_2/sample.txt";
+    let filename = "src/day_2/input.txt";
 
     let lines = file_utils::read_lines(filename);
     let games: Vec<Game> = lines
