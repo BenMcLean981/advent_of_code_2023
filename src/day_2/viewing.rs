@@ -8,7 +8,7 @@ pub struct Viewing {
 }
 
 impl Viewing {
-    pub fn new(counts: &HashMap<Cube, u32>) -> Viewing {
+    pub fn new(counts: &HashMap<Cube, u32>) -> Self {
         return Viewing {
             counts: counts.clone(),
         };
