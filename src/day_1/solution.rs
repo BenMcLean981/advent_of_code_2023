@@ -21,7 +21,10 @@ pub fn add_lines(lines: Vec<String>) -> u32 {
 pub fn get_calibration_value(s: &str) -> u32 {
     let preprocessed = replace_digit_text(s);
 
-    let chars = [get_first_digit(&preprocessed), get_last_digit(&preprocessed)];
+    let chars = [
+        get_first_digit(&preprocessed),
+        get_last_digit(&preprocessed),
+    ];
     let num_string: String = chars.iter().collect();
 
     return num_string.parse().unwrap();
@@ -31,7 +34,6 @@ fn get_first_digit(s: &str) -> char {
     let radix = 10;
     return s.chars().find(|c| c.is_digit(radix)).unwrap();
 }
-
 
 fn get_last_digit(s: &str) -> char {
     let radix = 10;
@@ -50,9 +52,8 @@ fn replace_digit_text(line: &str) -> String {
         i = i + 1;
     }
 
-    return result.iter().collect()
+    return result.iter().collect();
 }
-
 
 fn get_next_char(chars: &Vec<char>) -> char {
     if matches_start("one", chars) {
@@ -74,7 +75,7 @@ fn get_next_char(chars: &Vec<char>) -> char {
     } else if matches_start("nine", chars) {
         return '9';
     } else {
-        return chars.first().unwrap().clone();   
+        return chars.first().unwrap().clone();
     }
 }
 
@@ -87,9 +88,9 @@ fn matches_start(check: &str, chars: &Vec<char>) -> bool {
 }
 
 fn read_lines(filename: &str) -> Vec<String> {
-    return read_to_string(filename) 
-        .unwrap()  // panic on possible file-reading errors
-        .lines()  // split the string into an iterator of string slices
+    return read_to_string(filename)
+        .unwrap() // panic on possible file-reading errors
+        .lines() // split the string into an iterator of string slices
         .map(String::from)
         .collect();
 }
