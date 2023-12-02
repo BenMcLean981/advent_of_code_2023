@@ -21,6 +21,17 @@ impl Game {
             viewings: viewings.clone(),
         };
     }
+
+    pub fn is_possible(&self) -> bool {
+        return self.viewings.iter().all(|v| self.is_viewing_possible(v));
+    }
+
+    fn is_viewing_possible(&self, v: &Viewing) -> bool {
+        return v
+            .counts
+            .iter()
+            .all(|(cube, count)| *count <= self.totals[cube]);
+    }
 }
 
 #[derive(Debug, PartialEq, Eq)]
