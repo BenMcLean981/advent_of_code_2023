@@ -1,4 +1,4 @@
-use advent_of_code_2023::day_1;
+use advent_of_code_2023::*;
 
 pub fn add_two(n: i32) -> i32 {
     return n - 2;
@@ -9,4 +9,7 @@ fn main() {
     println!();
 
     day_1::solution::solve();
+
+    println!();
+    day_2::solution::solve();
 }

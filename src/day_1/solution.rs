@@ -1,11 +1,12 @@
-use std::fs::read_to_string;
+use crate::utils::file_utils;
 
 pub fn solve() {
     let filename = "src/day_1/input.txt";
 
-    let lines = read_lines(filename);
+    let lines = file_utils::read_lines(filename);
     let calibration_value = add_lines(lines);
 
+    println!("Day 1");
     println!("The calibration value is {}.", calibration_value);
 }
 
@@ -85,12 +86,4 @@ fn matches_start(check: &str, chars: &Vec<char>) -> bool {
     }
 
     return chars[0..check.len()].iter().collect::<String>() == check;
-}
-
-fn read_lines(filename: &str) -> Vec<String> {
-    return read_to_string(filename)
-        .unwrap() // panic on possible file-reading errors
-        .lines() // split the string into an iterator of string slices
-        .map(String::from)
-        .collect();
 }
