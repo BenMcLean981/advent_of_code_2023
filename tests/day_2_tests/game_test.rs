@@ -136,3 +136,22 @@ pub fn get_testing_totals() -> HashMap<Cube, u32> {
 
     return result;
 }
+
+#[test]
+pub fn get_minimum_power_returns_power() {
+    let mut viewing_1 = HashMap::<Cube, u32>::new();
+    viewing_1.insert(Cube::Blue, 4);
+
+    let mut viewing_2 = HashMap::<Cube, u32>::new();
+    viewing_2.insert(Cube::Red, 3);
+    viewing_2.insert(Cube::Green, 14);
+    viewing_2.insert(Cube::Blue, 2);
+
+    let game = Game::new(
+        0,
+        &get_testing_totals(),
+        &vec![Viewing::new(&viewing_1), Viewing::new(&viewing_2)],
+    );
+
+    assert_eq!(168, game.get_minimum_power());
+}

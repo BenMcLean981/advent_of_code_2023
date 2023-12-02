@@ -32,6 +32,42 @@ impl Game {
             .iter()
             .all(|(cube, count)| *count <= self.totals[cube]);
     }
+
+    pub fn get_minimum_power(&self) -> u32 {
+        return self
+            .get_minimum_set()
+            .iter()
+            .map(|(_, c)| c)
+            .fold(1, |prod, c| prod * c);
+    }
+
+    fn get_minimum_set(&self) -> HashMap<Cube, u32> {
+        let cube_counts = self.get_counts_by_cube();
+
+        let mut result = HashMap::<Cube, u32>::new();
+
+        cube_counts.iter().for_each(|(cube, counts)| {
+            result.insert(*cube, *counts.iter().max().unwrap());
+        });
+
+        return result;
+    }
+
+    fn get_counts_by_cube(&self) -> HashMap<Cube, Vec<u32>> {
+        let mut result = HashMap::<Cube, Vec<u32>>::new();
+
+        self.viewings.iter().for_each(|v| {
+            v.counts.iter().for_each(|(cube, count)| {
+                if !result.contains_key(cube) {
+                    result.insert(*cube, vec![*count]);
+                } else {
+                    result.get_mut(cube).unwrap().push(*count);
+                }
+            });
+        });
+
+        return result;
+    }
 }
 
 #[derive(Debug, PartialEq, Eq)]
