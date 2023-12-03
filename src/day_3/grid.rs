@@ -32,6 +32,26 @@ impl Grid {
             .collect();
     }
 
+    pub fn get_gear_ratios(&self) -> Vec<u32> {
+        let numbers = self.get_numbers();
+        let symbols = self.get_symbols();
+
+        let mut gear_ratios: Vec<u32> = vec![];
+
+        symbols.iter().filter(|s| s.char == '*').for_each(|s| {
+            let nums: Vec<&Number> = numbers
+                .iter()
+                .filter(|n| n.is_neighboring(s.position))
+                .collect();
+
+            if nums.len() == 2 {
+                gear_ratios.push(nums[0].number * nums[1].number);
+            }
+        });
+
+        return gear_ratios;
+    }
+
     pub fn get_part_numbers(&self) -> Vec<u32> {
         let numbers = self.get_numbers();
         let symbols = self.get_symbols();
