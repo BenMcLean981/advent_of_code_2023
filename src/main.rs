@@ -12,4 +12,7 @@ fn main() {
 
     println!();
     day_2::solution::solve();
+
+    println!();
+    day3::solution::solve();
 }
