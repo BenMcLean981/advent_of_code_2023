@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use super::position::Position;
 
 pub struct Number {
-    number: u32,
+    pub number: u32,
     positions: HashSet<Position>,
 }
 

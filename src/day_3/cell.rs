@@ -1,9 +1,9 @@
 use super::position::Position;
 
-#[derive(PartialEq, Eq, Hash)]
+#[derive(PartialEq, Eq, Hash, Clone, Copy)]
 pub struct Cell {
-    position: Position,
-    char: char,
+    pub position: Position,
+    pub char: char,
 }
 
 impl Cell {
