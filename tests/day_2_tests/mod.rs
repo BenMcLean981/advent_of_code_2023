@@ -1,2 +1,2 @@
-pub mod game_test;
-pub mod viewing_test;
+pub mod game_tests;
+pub mod viewing_tests;

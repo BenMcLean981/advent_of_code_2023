@@ -32,7 +32,10 @@ fn get_calibration_value_returns_last_spelt_digit() {
 
 #[test]
 fn get_calibration_value_returns_first_spelt_digit_with_overlap() {
-    assert_eq!(87, day_1::solution::get_calibration_value("trebeightwo7uchet"));
+    assert_eq!(
+        87,
+        day_1::solution::get_calibration_value("trebeightwo7uchet")
+    );
 }
 
 #[test]
@@ -41,7 +44,7 @@ fn add_lines_sums_calibration_numbers_of_lines() {
         "1abc2".to_string(),
         "pqr3stu8vwx".to_string(),
         "a1b2c3d4e5f".to_string(),
-        "treb7uchet".to_string()
+        "treb7uchet".to_string(),
     ];
 
     assert_eq!(142, day_1::solution::add_lines(lines));
