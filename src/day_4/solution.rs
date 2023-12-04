@@ -1,6 +1,9 @@
 use std::str::FromStr;
 
-use crate::{day_4::card::Card, utils::file_utils::read_lines};
+use crate::{
+    day_4::{card::Card, card_count_builder::CardCountBuilder},
+    utils::file_utils::read_lines,
+};
 
 pub fn solve() {
     let filename = "src/day_4/input.txt";
@@ -15,6 +18,12 @@ pub fn solve() {
 
     let total_score: u32 = scores.iter().sum();
 
+    let mut card_counter = CardCountBuilder::new(cards);
+    card_counter.build();
+
+    let card_count = card_counter.get_count().unwrap();
+
     println!("Day 4");
     println!("The total score of all cards is {total_score}.");
+    println!("The final number of cards is {card_count}.");
 }
