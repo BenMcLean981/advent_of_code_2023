@@ -13,6 +13,25 @@ impl Card {
             numbers,
         };
     }
+
+    pub fn get_score(&self) -> u32 {
+        let matches: usize = self
+            .numbers
+            .iter()
+            .filter(|n| self.winning_numbers.contains(n))
+            .count()
+            .try_into()
+            .unwrap();
+
+        if matches == 0 {
+            return 0;
+        } else {
+            let exponent: usize = matches - 1;
+            let exponent: u32 = exponent.try_into().unwrap();
+
+            return 2_i32.pow(exponent).try_into().unwrap();
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, Eq)]

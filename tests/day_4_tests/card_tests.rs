@@ -29,3 +29,32 @@ pub fn from_str_several_number_returns_card() {
 
     assert_eq!(expected, actual);
 }
+
+#[test]
+pub fn score_no_winning_numbers_returns_zero() {
+    let card = Card::from_str("Card 4: 12 5 812 | 68 1").unwrap();
+
+    assert_eq!(0, card.get_score());
+}
+
+#[test]
+pub fn score_one_winning_numbers_returns_one() {
+    let card = Card::from_str("Card 4: 12 5 812 | 68 5").unwrap();
+
+    assert_eq!(1, card.get_score());
+}
+
+#[test]
+pub fn score_two_winning_numbers_returns_two() {
+    let card = Card::from_str("Card 4: 12 5 812 | 68 5 12").unwrap();
+
+    assert_eq!(2, card.get_score());
+}
+
+#[test]
+pub fn score_four_winning_numbers_returns_eight() {
+    let card =
+        Card::from_str("Card 4: 12 5 812 92 18 | 18 92 68 5 12").unwrap();
+
+    assert_eq!(8, card.get_score());
+}
