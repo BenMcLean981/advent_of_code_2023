@@ -1,4 +1,6 @@
-use super::{map::Map, seed_data::SeedData};
+use super::{
+    map::Map, range::Range, seed_data::SeedData, seed_data_range::SeedDataRange,
+};
 
 pub struct SeedMaps {
     seed_to_soil: Map,
@@ -43,6 +45,45 @@ impl SeedMaps {
         let location = self.humidity_to_location.map(humidity);
 
         return SeedData {
+            seed,
+            soil,
+            fertilizer,
+            water,
+            light,
+            temperature,
+            humidity,
+            location,
+        };
+    }
+
+    pub fn get_data_range(&self, seed: Range) -> SeedDataRange {
+        let soil: Vec<Range> = self.seed_to_soil.map_range(seed);
+        let fertilizer: Vec<Range> = soil
+            .iter()
+            .flat_map(|r| self.soil_to_fertilizer.map_range(*r))
+            .collect();
+        let water: Vec<Range> = fertilizer
+            .iter()
+            .flat_map(|r| self.fertilizer_to_water.map_range(*r))
+            .collect();
+        let light: Vec<Range> = water
+            .iter()
+            .flat_map(|r| self.water_to_light.map_range(*r))
+            .collect();
+        let temperature: Vec<Range> = light
+            .iter()
+            .flat_map(|r| self.light_to_temperature.map_range(*r))
+            .collect();
+        let humidity: Vec<Range> = temperature
+            .iter()
+            .flat_map(|r| self.temperature_to_humidity.map_range(*r))
+            .collect();
+        let location: Vec<Range> = humidity
+            .iter()
+            .flat_map(|r| self.humidity_to_location.map_range(*r))
+            .collect();
+
+        return SeedDataRange {
             seed,
             soil,
             fertilizer,
