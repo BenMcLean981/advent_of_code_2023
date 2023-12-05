@@ -1,8 +1,8 @@
-use super::{
-    range::Range,
-    range_map::{self, RangeMap},
-};
+use std::str::FromStr;
 
+use super::range_map::RangeMap;
+
+#[derive(Debug, PartialEq, Eq)]
 pub struct Map {
     maps: Vec<RangeMap>,
 }
@@ -12,6 +12,15 @@ impl Map {
         // could validate no overlap here, requires Range.intersect
 
         return Map { maps };
+    }
+
+    pub fn from_lines(lines: &Vec<&str>) -> Self {
+        let maps = lines[1..]
+            .iter()
+            .map(|l| RangeMap::from_str(*l).unwrap())
+            .collect();
+
+        return Map::new(maps);
     }
 
     pub fn map(&self, n: u32) -> u32 {

@@ -29,3 +29,22 @@ pub fn map_in_range_maps() {
     assert_eq!(8, map.map(50));
     assert_eq!(9, map.map(51));
 }
+
+#[test]
+pub fn map_from_lines_makes_map() {
+    let lines = vec![
+        "light-to-temperature map:",
+        "45 77 23",
+        "81 45 19",
+        "68 64 13",
+    ];
+
+    let actual = Map::from_lines(&lines);
+    let expected = Map::new(vec![
+        RangeMap::new(Range::new(77, 23), Range::new(45, 23)),
+        RangeMap::new(Range::new(45, 19), Range::new(81, 19)),
+        RangeMap::new(Range::new(64, 13), Range::new(68, 13)),
+    ]);
+
+    assert_eq!(expected, actual);
+}

@@ -1,5 +1,8 @@
+use std::str::FromStr;
+
 use super::range::Range;
 
+#[derive(Debug, PartialEq, Eq)]
 pub struct RangeMap {
     source: Range,
     destination: Range,
@@ -29,5 +32,29 @@ impl RangeMap {
         } else {
             return n;
         }
+    }
+}
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct ParseRangeMapError;
+
+impl FromStr for RangeMap {
+    type Err = ParseRangeMapError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let split = s
+            .split(' ')
+            .filter(|s| !s.trim().is_empty())
+            .map(|s| u32::from_str(s).unwrap())
+            .collect::<Vec<u32>>();
+
+        let destination_start = split[0];
+        let source_start = split[1];
+        let size = split[2];
+
+        let destination = Range::new(destination_start, size);
+        let source = Range::new(source_start, size);
+
+        return Ok(RangeMap::new(source, destination));
     }
 }

@@ -1,3 +1,4 @@
+#[derive(Debug, PartialEq, Eq)]
 pub struct Range {
     pub lower: u32,
     pub upper: u32,
