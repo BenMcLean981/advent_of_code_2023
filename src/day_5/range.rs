@@ -10,6 +10,8 @@ impl Range {
             panic!();
         }
 
+        println!("{lower}, {size}");
+
         return Range {
             lower,
             upper: lower + size - 1,
