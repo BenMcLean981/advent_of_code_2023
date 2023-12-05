@@ -48,3 +48,71 @@ pub fn map_from_lines_makes_map() {
 
     assert_eq!(expected, actual);
 }
+
+#[test]
+pub fn map_ranges_no_intersection_returns_empty() {
+    let map = Map::new(vec![
+        RangeMap::new(Range::new(77, 23), Range::new(45, 23)),
+        RangeMap::new(Range::new(45, 19), Range::new(81, 19)),
+        RangeMap::new(Range::new(64, 13), Range::new(68, 13)),
+    ]);
+
+    assert_eq!(true, map.map_range(Range::new(5, 2)).is_empty());
+}
+
+#[test]
+pub fn map_range_subset_of_one_returns_one() {
+    let map = Map::new(vec![
+        RangeMap::new(Range::new(77, 23), Range::new(45, 23)),
+        RangeMap::new(Range::new(45, 19), Range::new(81, 19)),
+        RangeMap::new(Range::new(64, 13), Range::new(68, 13)),
+    ]);
+
+    let range = Range::new(65, 10);
+
+    assert_eq!(vec![range], map.map_range(range));
+}
+
+#[test]
+pub fn map_range_partial_subset_of_one_returns_two() {
+    let map = Map::new(vec![
+        RangeMap::new(Range::new(77, 23), Range::new(45, 23)),
+        RangeMap::new(Range::new(45, 19), Range::new(81, 19)),
+        RangeMap::new(Range::new(64, 13), Range::new(68, 13)),
+    ]);
+
+    let actual = map.map_range(Range::new(60, 10));
+    let expected = vec![Range::new(60, 4), Range::new(68, 6)];
+
+    assert_eq!(true, have_same_items(actual, expected));
+}
+
+#[test]
+pub fn map_range_partial_subset_of_two_returns_three() {
+    let map = Map::new(vec![
+        RangeMap::new(Range::new(77, 23), Range::new(45, 23)),
+        RangeMap::new(Range::new(45, 19), Range::new(81, 19)),
+        RangeMap::new(Range::new(66, 13), Range::new(68, 13)),
+    ]);
+
+    let actual = map.map_range(Range::new(55, 15));
+    let expected =
+        vec![Range::new(81, 9), Range::new(64, 2), Range::new(68, 4)];
+
+    assert_eq!(true, have_same_items(actual, expected));
+}
+
+fn have_same_items(s1: Vec<Range>, s2: Vec<Range>) -> bool {
+    let sorted_1 = sort(s1);
+    let sorted_2 = sort(s2);
+
+    return sorted_1.eq(&sorted_2);
+}
+
+fn sort(vec: Vec<Range>) -> Vec<Range> {
+    let mut result = vec.to_vec();
+
+    result.sort();
+
+    return result;
+}

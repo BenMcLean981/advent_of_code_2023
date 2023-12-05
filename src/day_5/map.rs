@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use super::range_map::RangeMap;
+use super::{range::Range, range_map::RangeMap};
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct Map {
@@ -31,5 +31,9 @@ impl Map {
         } else {
             return n;
         }
+    }
+
+    pub fn map_range(&self, range: Range) -> Vec<Range> {
+        return vec![];
     }
 }
