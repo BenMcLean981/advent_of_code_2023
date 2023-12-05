@@ -34,6 +34,30 @@ impl Map {
     }
 
     pub fn map_range(&self, range: Range) -> Vec<Range> {
-        return vec![];
+        let intersections = self
+            .maps
+            .iter()
+            .map(|m| Range::intersection(range, m.source))
+            .filter(|r| r.is_some())
+            .map(|r| r.unwrap())
+            .collect::<Vec<Range>>();
+
+        let mut results = Range::subtract_all(range, intersections.clone());
+        let mut mapped: Vec<Range> = intersections
+            .iter()
+            .map(|r| self.find_map(*r).map_range(*r))
+            .collect();
+
+        results.append(&mut mapped);
+
+        return results;
+    }
+
+    fn find_map(&self, r: Range) -> &RangeMap {
+        return self
+            .maps
+            .iter()
+            .find(|m| Range::intersection(r, m.source).is_some())
+            .unwrap();
     }
 }

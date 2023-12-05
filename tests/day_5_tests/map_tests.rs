@@ -1,5 +1,7 @@
 use advent_of_code_2023::day_5::{map::Map, range::Range, range_map::RangeMap};
 
+use crate::day_5_tests::utils::have_same_items;
+
 #[test]
 pub fn map_in_no_range_does_not_map() {
     let map = Map::new(vec![
@@ -50,14 +52,17 @@ pub fn map_from_lines_makes_map() {
 }
 
 #[test]
-pub fn map_ranges_no_intersection_returns_empty() {
+pub fn map_range_no_intersection_returns_empty() {
     let map = Map::new(vec![
         RangeMap::new(Range::new(77, 23), Range::new(45, 23)),
         RangeMap::new(Range::new(45, 19), Range::new(81, 19)),
         RangeMap::new(Range::new(64, 13), Range::new(68, 13)),
     ]);
 
-    assert_eq!(true, map.map_range(Range::new(5, 2)).is_empty());
+    let actual = map.map_range(Range::new(5, 2));
+    let expected = vec![Range::new(5, 2)];
+
+    assert_eq!(true, have_same_items(expected, actual));
 }
 
 #[test]
@@ -68,16 +73,17 @@ pub fn map_range_subset_of_one_returns_one() {
         RangeMap::new(Range::new(64, 13), Range::new(68, 13)),
     ]);
 
-    let range = Range::new(65, 10);
+    let actual = map.map_range(Range::new(65, 10));
+    let expected = vec![Range::new(69, 10)];
 
-    assert_eq!(vec![range], map.map_range(range));
+    assert_eq!(true, have_same_items(expected, actual));
 }
 
 #[test]
 pub fn map_range_partial_subset_of_one_returns_two() {
     let map = Map::new(vec![
         RangeMap::new(Range::new(77, 23), Range::new(45, 23)),
-        RangeMap::new(Range::new(45, 19), Range::new(81, 19)),
+        RangeMap::new(Range::new(45, 10), Range::new(81, 10)),
         RangeMap::new(Range::new(64, 13), Range::new(68, 13)),
     ]);
 
@@ -97,22 +103,7 @@ pub fn map_range_partial_subset_of_two_returns_three() {
 
     let actual = map.map_range(Range::new(55, 15));
     let expected =
-        vec![Range::new(81, 9), Range::new(64, 2), Range::new(68, 4)];
+        vec![Range::new(91, 9), Range::new(64, 2), Range::new(68, 4)];
 
     assert_eq!(true, have_same_items(actual, expected));
-}
-
-fn have_same_items(s1: Vec<Range>, s2: Vec<Range>) -> bool {
-    let sorted_1 = sort(s1);
-    let sorted_2 = sort(s2);
-
-    return sorted_1.eq(&sorted_2);
-}
-
-fn sort(vec: Vec<Range>) -> Vec<Range> {
-    let mut result = vec.to_vec();
-
-    result.sort();
-
-    return result;
 }

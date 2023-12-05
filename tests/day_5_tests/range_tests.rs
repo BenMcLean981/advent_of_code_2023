@@ -1,5 +1,7 @@
 use advent_of_code_2023::day_5::range::Range;
 
+use crate::day_5_tests::utils::have_same_items;
+
 #[test]
 #[should_panic]
 pub fn new_zero_length_panics() {
@@ -74,6 +76,14 @@ pub fn intersection_subset_returns_subset() {
 }
 
 #[test]
+pub fn intersection_superset_returns_subset() {
+    let r1 = Range::new(7, 2);
+    let r2 = Range::new(5, 5);
+
+    assert_eq!(r1, Range::intersection(r1, r2).unwrap());
+}
+
+#[test]
 pub fn intersection_overlap_end_returns_overlap() {
     let r1 = Range::new(5, 5);
     let r2 = Range::new(7, 5);
@@ -95,4 +105,48 @@ pub fn intersection_touching_returns_overlap() {
     let r2 = Range::new(11, 5);
 
     assert_eq!(Range::new(11, 1), Range::intersection(r1, r2).unwrap());
+}
+
+#[test]
+pub fn difference_no_intersection_returns_original() {
+    let base = Range::new(0, 10);
+    let sub = Range::new(12, 3);
+
+    let actual = Range::difference(base, sub);
+    let expected = vec![base];
+
+    assert_eq!(true, have_same_items(expected, actual));
+}
+
+#[test]
+pub fn difference_intersects_upper_returns_lower() {
+    let base = Range::new(0, 10);
+    let sub = Range::new(8, 4);
+
+    let actual = Range::difference(base, sub);
+    let expected = vec![Range::new(0, 8)];
+
+    assert_eq!(true, have_same_items(expected, actual));
+}
+
+#[test]
+pub fn difference_intersects_lower_returns_upper() {
+    let base = Range::new(10, 10);
+    let sub = Range::new(8, 4);
+
+    let actual = Range::difference(base, sub);
+    let expected = vec![Range::new(12, 8)];
+
+    assert_eq!(true, have_same_items(expected, actual));
+}
+
+#[test]
+pub fn difference_intersects_middle_returns_ends() {
+    let base = Range::new(10, 10);
+    let sub = Range::new(12, 4);
+
+    let actual = Range::difference(base, sub);
+    let expected = vec![Range::new(10, 2), Range::new(16, 4)];
+
+    assert_eq!(true, have_same_items(expected, actual));
 }

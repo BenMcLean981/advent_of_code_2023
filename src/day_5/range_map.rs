@@ -4,7 +4,7 @@ use super::range::Range;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct RangeMap {
-    source: Range,
+    pub source: Range,
     destination: Range,
 }
 
