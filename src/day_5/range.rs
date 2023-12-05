@@ -4,7 +4,7 @@ pub struct Range {
 }
 
 impl Range {
-    pub fn new(lower: u32, size: u32) -> Range {
+    pub fn new(lower: u32, size: u32) -> Self {
         return Range {
             lower,
             upper: lower + size,
@@ -13,5 +13,9 @@ impl Range {
 
     pub fn contains(&self, n: u32) -> bool {
         return n >= self.lower && n <= self.upper;
+    }
+
+    pub fn len(&self) -> u32 {
+        return self.upper - self.lower;
     }
 }
