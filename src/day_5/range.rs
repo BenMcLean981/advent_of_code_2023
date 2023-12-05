@@ -5,9 +5,13 @@ pub struct Range {
 
 impl Range {
     pub fn new(lower: u32, size: u32) -> Self {
+        if size == 0 {
+            panic!();
+        }
+
         return Range {
             lower,
-            upper: lower + size,
+            upper: lower + size - 1,
         };
     }
 

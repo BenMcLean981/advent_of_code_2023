@@ -14,7 +14,7 @@ pub fn new_same_sizes_does_not_panic() {
 
 #[test]
 pub fn map_in_range_maps() {
-    let size = 2;
+    let size = 3;
     let map = RangeMap::new(Range::new(5, size), Range::new(10, size));
 
     assert_eq!(10, map.map(5));
@@ -23,7 +23,7 @@ pub fn map_in_range_maps() {
 
 #[test]
 pub fn map_out_of_range_does_not_map() {
-    let size = 2;
+    let size = 3;
     let map = RangeMap::new(Range::new(5, size), Range::new(10, size));
 
     assert_eq!(4, map.map(4));
