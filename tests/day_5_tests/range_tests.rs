@@ -54,7 +54,7 @@ pub fn intersection_no_overlap_returns_none() {
     let r1 = Range::new(5, 3);
     let r2 = Range::new(8, 3);
 
-    assert_eq!(None, Range::intersection(&r1, &r2))
+    assert_eq!(None, Range::intersection(r1, r2))
 }
 
 #[test]
@@ -62,7 +62,7 @@ pub fn intersection_equal_returns_equal() {
     let r1 = Range::new(5, 3);
     let r2 = r1.clone();
 
-    assert_eq!(r1.clone(), Range::intersection(&r1, &r2).unwrap())
+    assert_eq!(r1.clone(), Range::intersection(r1, r2).unwrap())
 }
 
 #[test]
@@ -70,7 +70,7 @@ pub fn intersection_subset_returns_subset() {
     let r1 = Range::new(5, 5);
     let r2 = Range::new(7, 2);
 
-    assert_eq!(r2, Range::intersection(&r1, &r2).unwrap());
+    assert_eq!(r2, Range::intersection(r1, r2).unwrap());
 }
 
 #[test]
@@ -78,7 +78,7 @@ pub fn intersection_overlap_end_returns_overlap() {
     let r1 = Range::new(5, 5);
     let r2 = Range::new(7, 5);
 
-    assert_eq!(Range::new(7, 3), Range::intersection(&r1, &r2).unwrap());
+    assert_eq!(Range::new(7, 3), Range::intersection(r1, r2).unwrap());
 }
 
 #[test]
@@ -86,7 +86,7 @@ pub fn intersection_overlap_start_returns_overlap() {
     let r1 = Range::new(7, 5);
     let r2 = Range::new(5, 5);
 
-    assert_eq!(Range::new(7, 3), Range::intersection(&r1, &r2).unwrap());
+    assert_eq!(Range::new(7, 3), Range::intersection(r1, r2).unwrap());
 }
 
 #[test]
@@ -94,5 +94,5 @@ pub fn intersection_touching_returns_overlap() {
     let r1 = Range::new(7, 5);
     let r2 = Range::new(11, 5);
 
-    assert_eq!(Range::new(11, 1), Range::intersection(&r1, &r2).unwrap());
+    assert_eq!(Range::new(11, 1), Range::intersection(r1, r2).unwrap());
 }

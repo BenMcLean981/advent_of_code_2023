@@ -30,3 +30,35 @@ pub fn map_out_of_range_does_not_map() {
     assert_eq!(8, map.map(8));
     assert_eq!(10, map.map(10));
 }
+
+#[test]
+#[should_panic]
+pub fn map_range_no_overlap_panics() {
+    let size = 3;
+    let map = RangeMap::new(Range::new(5, size), Range::new(10, size));
+
+    let range = Range::new(8, 3);
+
+    map.map_range(range);
+}
+
+#[test]
+#[should_panic]
+pub fn map_range_not_subset_panics() {
+    let size = 3;
+    let map = RangeMap::new(Range::new(5, size), Range::new(10, size));
+
+    let range = Range::new(6, 3);
+
+    map.map_range(range);
+}
+
+#[test]
+pub fn map_range_subset_maps() {
+    let size = 4;
+    let map = RangeMap::new(Range::new(5, size), Range::new(10, size));
+
+    let range = Range::new(6, 2);
+
+    assert_eq!(Range::new(11, 2), map.map_range(range));
+}

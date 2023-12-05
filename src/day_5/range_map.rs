@@ -33,6 +33,20 @@ impl RangeMap {
             return n;
         }
     }
+
+    pub fn map_range(&self, range: Range) -> Range {
+        let intersection = Range::intersection(self.source, range).unwrap();
+        let is_subset = range == intersection;
+
+        if !is_subset {
+            panic!();
+        }
+
+        let lower = self.map(range.lower);
+        let upper = self.map(range.upper);
+
+        return Range { lower, upper };
+    }
 }
 
 #[derive(Debug, PartialEq, Eq)]

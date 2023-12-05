@@ -16,7 +16,7 @@ impl Range {
         };
     }
 
-    pub fn intersection(r1: &Range, r2: &Range) -> Option<Range> {
+    pub fn intersection(r1: Range, r2: Range) -> Option<Range> {
         if r1.contains(r2.lower) && r1.contains(r2.upper) {
             return Some(r2.clone());
         } else if r2.contains(r1.lower) && r2.contains(r1.upper) {
