@@ -33,7 +33,7 @@ impl SeedMaps {
         };
     }
 
-    pub fn get_data(&self, seed: u32) -> SeedData {
+    pub fn get_data(&self, seed: u64) -> SeedData {
         let soil = self.seed_to_soil.map(seed);
         let fertilizer = self.soil_to_fertilizer.map(soil);
         let water = self.fertilizer_to_water.map(fertilizer);

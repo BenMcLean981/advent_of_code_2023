@@ -20,11 +20,11 @@ impl RangeMap {
         };
     }
 
-    pub fn should_map(&self, n: u32) -> bool {
+    pub fn should_map(&self, n: u64) -> bool {
         return self.source.contains(n);
     }
 
-    pub fn map(&self, n: u32) -> u32 {
+    pub fn map(&self, n: u64) -> u64 {
         if self.should_map(n) {
             let diff = n - self.source.lower;
 
@@ -45,8 +45,8 @@ impl FromStr for RangeMap {
         let split = s
             .split(' ')
             .filter(|s| !s.trim().is_empty())
-            .map(|s| u32::from_str(s).unwrap())
-            .collect::<Vec<u32>>();
+            .map(|s| u64::from_str(s).unwrap())
+            .collect::<Vec<u64>>();
 
         let destination_start = split[0];
         let source_start = split[1];

@@ -23,7 +23,7 @@ impl Map {
         return Map::new(maps);
     }
 
-    pub fn map(&self, n: u32) -> u32 {
+    pub fn map(&self, n: u64) -> u64 {
         let range_map = self.maps.iter().find(|m| m.should_map(n));
 
         if let Some(range_map) = range_map {
