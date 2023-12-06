@@ -9,3 +9,4 @@ edition = "2021"
 doctest = false
 
 [dependencies]
+num-bigfloat = "1"

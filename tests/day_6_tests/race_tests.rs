@@ -20,3 +20,10 @@ pub fn get_num_possible_wins_returns_parabolic_number() {
 
     assert_eq!(4, race.get_num_possible_wins())
 }
+
+#[test]
+pub fn get_num_possible_wins_returns_parabolic_number_case_2() {
+    let race = Race::new(30, 200);
+
+    assert_eq!(9, race.get_num_possible_wins())
+}
