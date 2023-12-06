@@ -21,4 +21,7 @@ fn main() {
 
     println!();
     day_5::solution::solve();
+
+    println!();
+    day_6::solution::solve();
 }
