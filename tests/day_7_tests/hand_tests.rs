@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{cmp::Ordering, str::FromStr};
 
 use advent_of_code_2023::day_7::{
     hand::{Hand, HandType},
@@ -67,4 +67,80 @@ pub fn get_type_high_card() {
         Hand::new(Rank::Ace, Rank::Jack, Rank::Queen, Rank::Two, Rank::Three);
 
     assert_eq!(HandType::HighCard, hand.get_type());
+}
+
+#[test]
+pub fn orders_by_hand_type() {
+    let high_card =
+        Hand::new(Rank::Ace, Rank::Jack, Rank::Queen, Rank::Two, Rank::Three);
+    let one_pair =
+        Hand::new(Rank::Ace, Rank::Ace, Rank::Queen, Rank::Two, Rank::Three);
+    let two_pair =
+        Hand::new(Rank::Ace, Rank::Ace, Rank::Queen, Rank::Two, Rank::Queen);
+    let three_of_a_kind =
+        Hand::new(Rank::Ace, Rank::Queen, Rank::Queen, Rank::Two, Rank::Queen);
+    let full_house =
+        Hand::new(Rank::Ace, Rank::Queen, Rank::Queen, Rank::Ace, Rank::Queen);
+    let four_of_a_kind = Hand::new(
+        Rank::Ace,
+        Rank::Queen,
+        Rank::Queen,
+        Rank::Queen,
+        Rank::Queen,
+    );
+    let five_of_a_kind = Hand::new(
+        Rank::Queen,
+        Rank::Queen,
+        Rank::Queen,
+        Rank::Queen,
+        Rank::Queen,
+    );
+
+    let mut hands = vec![
+        five_of_a_kind,
+        four_of_a_kind,
+        full_house,
+        three_of_a_kind,
+        two_pair,
+        one_pair,
+        high_card,
+        high_card,
+        one_pair,
+        two_pair,
+        three_of_a_kind,
+        full_house,
+        four_of_a_kind,
+        five_of_a_kind,
+    ];
+
+    let expected = vec![
+        high_card,
+        high_card,
+        one_pair,
+        one_pair,
+        two_pair,
+        two_pair,
+        three_of_a_kind,
+        three_of_a_kind,
+        full_house,
+        full_house,
+        four_of_a_kind,
+        four_of_a_kind,
+        five_of_a_kind,
+        five_of_a_kind,
+    ];
+
+    hands.sort();
+
+    assert_eq!(expected, hands);
+}
+
+#[test]
+pub fn ord_same_type_goes_by_rank() {
+    let hand_1 =
+        Hand::new(Rank::Ace, Rank::Ace, Rank::Two, Rank::Two, Rank::Ace);
+    let hand_2 =
+        Hand::new(Rank::Ace, Rank::Ace, Rank::Three, Rank::Three, Rank::Ace);
+
+    assert_eq!(Ordering::Less, hand_1.cmp(&hand_2));
 }

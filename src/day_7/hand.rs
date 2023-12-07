@@ -1,8 +1,8 @@
-use std::{collections::HashMap, str::FromStr};
+use std::{cmp::Ordering, collections::HashMap, str::FromStr};
 
 use super::rank::Rank;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct Hand {
     card_1: Rank,
     card_2: Rank,
@@ -90,6 +90,49 @@ pub enum HandType {
     TwoPair,
     OnePair,
     HighCard,
+}
+
+impl PartialOrd for Hand {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        let order = get_order(self.get_type());
+        let other_order = get_order(other.get_type());
+
+        let ordering = get_first_difference(vec![
+            order.cmp(&other_order),
+            self.card_1.cmp(&other.card_1),
+            self.card_2.cmp(&other.card_2),
+            self.card_3.cmp(&other.card_3),
+            self.card_4.cmp(&other.card_4),
+            self.card_5.cmp(&other.card_5),
+        ]);
+
+        return Some(ordering);
+    }
+}
+
+fn get_order(hand_type: HandType) -> u32 {
+    match hand_type {
+        HandType::FiveOfAKind => 6,
+        HandType::FourOfAKind => 5,
+        HandType::FullHouse => 4,
+        HandType::ThreeOfAKind => 3,
+        HandType::TwoPair => 2,
+        HandType::OnePair => 1,
+        HandType::HighCard => 0,
+    }
+}
+
+fn get_first_difference(orderings: Vec<Ordering>) -> Ordering {
+    return *orderings
+        .iter()
+        .find(|o| **o != Ordering::Equal)
+        .unwrap_or(&Ordering::Equal);
+}
+
+impl Ord for Hand {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        return self.partial_cmp(other).unwrap();
+    }
 }
 
 #[derive(Debug, PartialEq, Eq)]
