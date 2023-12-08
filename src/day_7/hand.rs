@@ -65,34 +65,51 @@ impl Hand {
     }
 
     pub fn get_type_with_jokers(&self) -> HandType {
-        let counts = self.get_counts();
+        let mut counts = self.get_counts();
         let num_jokers = count_jokers(*self);
 
-        if num_jokers >= 4 {
-            return HandType::FiveOfAKind;
-        } else if num_jokers == 3 && is_one_count_of(&counts, 2) {
-            return HandType::FiveOfAKind;
-        } else if num_jokers == 3 {
-            return HandType::FourOfAKind;
-        } else if num_jokers == 2 && is_one_count_of(&counts, 3) {
-            return HandType::FiveOfAKind;
-        } else if num_jokers == 2 && is_one_count_of(&counts, 2) {
-            return HandType::FourOfAKind;
-        } else if num_jokers == 2 {
-            return HandType::ThreeOfAKind;
-        } else if num_jokers == 1 && is_one_count_of(&counts, 4) {
-            return HandType::FiveOfAKind;
-        } else if num_jokers == 1 && is_one_count_of(&counts, 3) {
-            return HandType::FourOfAKind;
-        } else if num_jokers == 1 && is_two_counts_of(&counts, 2) {
-            return HandType::FullHouse;
-        } else if num_jokers == 1 && is_one_count_of(&counts, 2) {
-            return HandType::ThreeOfAKind;
-        } else if num_jokers == 1 {
-            return HandType::OnePair;
-        } else {
-            return self.get_type();
+        if num_jokers != 5 && num_jokers != 0 {
+            let max_card = counts
+                .iter()
+                .filter(|(card, _)| **card != Rank::Jack)
+                .max_by(|(_, count1), (_, count2)| count1.cmp(count2))
+                .unwrap();
+
+            let card = *max_card.0;
+            counts.insert(card, max_card.1 + num_jokers);
+            counts.remove(&Rank::Jack);
         }
+
+        let number_counts = counts.len();
+        let max_count = *counts.values().max().unwrap();
+
+        if number_counts == 1 {
+            return HandType::FiveOfAKind;
+        }
+
+        if number_counts == 2 {
+            if max_count == 4 {
+                return HandType::FourOfAKind;
+            }
+            if max_count == 3 {
+                return HandType::FullHouse;
+            }
+        }
+
+        if number_counts == 3 {
+            if max_count == 2 {
+                return HandType::TwoPair;
+            }
+            if max_count == 3 {
+                return HandType::ThreeOfAKind;
+            }
+        }
+
+        if number_counts == 4 {
+            return HandType::OnePair;
+        }
+
+        return HandType::HighCard;
     }
 
     fn get_counts(&self) -> HashMap<Rank, u32> {

@@ -198,7 +198,7 @@ pub fn get_type_with_jokers_2_jokers_no_dupes_3_of_a_kind() {
     let hand =
         Hand::new(Rank::Ace, Rank::Three, Rank::Two, Rank::Jack, Rank::Jack);
 
-    assert_eq!(HandType::FourOfAKind, hand.get_type_with_jokers());
+    assert_eq!(HandType::ThreeOfAKind, hand.get_type_with_jokers());
 }
 
 #[test]
