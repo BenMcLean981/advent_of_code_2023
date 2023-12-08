@@ -48,6 +48,53 @@ impl Hand {
         }
     }
 
+    pub fn cmp_with_jokers(&self, other: &Self) -> Ordering {
+        let t = self.get_type_with_jokers();
+        let other_t = other.get_type_with_jokers();
+
+        let ordering = get_first_difference(vec![
+            t.cmp(&other_t),
+            self.card_1.cmp(&other.card_1),
+            self.card_2.cmp(&other.card_2),
+            self.card_3.cmp(&other.card_3),
+            self.card_4.cmp(&other.card_4),
+            self.card_5.cmp(&other.card_5),
+        ]);
+
+        return ordering;
+    }
+
+    pub fn get_type_with_jokers(&self) -> HandType {
+        let counts = self.get_counts();
+        let num_jokers = count_jokers(*self);
+
+        if num_jokers >= 4 {
+            return HandType::FiveOfAKind;
+        } else if num_jokers == 3 && is_one_count_of(&counts, 2) {
+            return HandType::FiveOfAKind;
+        } else if num_jokers == 3 {
+            return HandType::FourOfAKind;
+        } else if num_jokers == 2 && is_one_count_of(&counts, 3) {
+            return HandType::FiveOfAKind;
+        } else if num_jokers == 2 && is_one_count_of(&counts, 2) {
+            return HandType::FourOfAKind;
+        } else if num_jokers == 2 {
+            return HandType::ThreeOfAKind;
+        } else if num_jokers == 1 && is_one_count_of(&counts, 4) {
+            return HandType::FiveOfAKind;
+        } else if num_jokers == 1 && is_one_count_of(&counts, 3) {
+            return HandType::FourOfAKind;
+        } else if num_jokers == 1 && is_two_counts_of(&counts, 2) {
+            return HandType::FullHouse;
+        } else if num_jokers == 1 && is_one_count_of(&counts, 2) {
+            return HandType::ThreeOfAKind;
+        } else if num_jokers == 1 {
+            return HandType::OnePair;
+        } else {
+            return self.get_type();
+        }
+    }
+
     fn get_counts(&self) -> HashMap<Rank, u32> {
         let mut result = HashMap::<Rank, u32>::new();
 
@@ -61,6 +108,32 @@ impl Hand {
     }
 }
 
+fn count_jokers(hand: Hand) -> u32 {
+    let mut count = 0;
+
+    if hand.card_1 == Rank::Jack {
+        count += 1;
+    }
+
+    if hand.card_2 == Rank::Jack {
+        count += 1;
+    }
+
+    if hand.card_3 == Rank::Jack {
+        count += 1;
+    }
+
+    if hand.card_4 == Rank::Jack {
+        count += 1;
+    }
+
+    if hand.card_5 == Rank::Jack {
+        count += 1;
+    }
+
+    return count;
+}
+
 fn add_card_to_count(counts: &mut HashMap<Rank, u32>, card: Rank) {
     if counts.contains_key(&card) {
         counts.insert(card, counts[&card] + 1);
@@ -70,7 +143,7 @@ fn add_card_to_count(counts: &mut HashMap<Rank, u32>, card: Rank) {
 }
 
 fn is_one_count_of(counts: &HashMap<Rank, u32>, c: u32) -> bool {
-    return get_num_of_cards_with_count(counts, c) == 1;
+    return get_num_of_cards_with_count(counts, c) >= 1;
 }
 
 fn is_two_counts_of(counts: &HashMap<Rank, u32>, c: u32) -> bool {
@@ -81,7 +154,7 @@ fn get_num_of_cards_with_count(counts: &HashMap<Rank, u32>, c: u32) -> u32 {
     return counts.values().filter(|v| **v == c).count() as u32;
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum HandType {
     FiveOfAKind,
     FourOfAKind,
@@ -94,11 +167,8 @@ pub enum HandType {
 
 impl PartialOrd for Hand {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        let order = get_order(self.get_type());
-        let other_order = get_order(other.get_type());
-
         let ordering = get_first_difference(vec![
-            order.cmp(&other_order),
+            self.get_type().cmp(&other.get_type()),
             self.card_1.cmp(&other.card_1),
             self.card_2.cmp(&other.card_2),
             self.card_3.cmp(&other.card_3),
@@ -107,6 +177,21 @@ impl PartialOrd for Hand {
         ]);
 
         return Some(ordering);
+    }
+}
+
+impl PartialOrd for HandType {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        let order = get_order(*self);
+        let other_order = get_order(*other);
+
+        return Some(order.cmp(&other_order));
+    }
+}
+
+impl Ord for HandType {
+    fn cmp(&self, other: &Self) -> Ordering {
+        return self.partial_cmp(other).unwrap();
     }
 }
 

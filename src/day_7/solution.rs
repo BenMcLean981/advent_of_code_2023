@@ -6,19 +6,35 @@ pub fn solve() {
     let filename = "src/day_7/input.txt";
 
     let lines = read_lines(filename);
-    let mut bidded_hands = lines
+    let bidded_hands = lines
         .iter()
         .map(|l| BiddedHand::from_str(l).unwrap())
         .collect::<Vec<BiddedHand>>();
 
+    let part_1 = solve_part_1(bidded_hands.clone().as_mut());
+    let part_2 = solve_part_2(bidded_hands.clone().as_mut());
+
+    println!("Day 7");
+    println!("The total winnings are {part_1}.");
+    println!("The total winnings with jokers are {part_2}.");
+}
+
+fn solve_part_1(bidded_hands: &mut Vec<BiddedHand>) -> u32 {
     bidded_hands.sort();
 
-    let total_winnings: u32 = bidded_hands
+    return bidded_hands
         .iter()
         .enumerate()
         .map(|(index, hand)| (index as u32 + 1) * hand.bid)
         .sum();
+}
 
-    println!("Day 7");
-    println!("The total winnings are {total_winnings}.");
+fn solve_part_2(bidded_hands: &mut Vec<BiddedHand>) -> u32 {
+    bidded_hands.sort_by(|h1, h2| h1.hand.cmp_with_jokers(&h2.hand));
+
+    return bidded_hands
+        .iter()
+        .enumerate()
+        .map(|(index, hand)| (index as u32 + 1) * hand.bid)
+        .sum();
 }

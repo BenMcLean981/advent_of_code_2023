@@ -2,9 +2,9 @@ use std::str::FromStr;
 
 use super::hand::Hand;
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone, Copy)]
 pub struct BiddedHand {
-    hand: Hand,
+    pub hand: Hand,
     pub bid: u32,
 }
 

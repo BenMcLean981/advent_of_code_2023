@@ -22,7 +22,7 @@ pub fn get_type_five_of_a_kind() {
 }
 
 #[test]
-pub fn get_type_four_of_a_kind() {
+pub fn get_type_4_of_a_kind() {
     let hand =
         Hand::new(Rank::Ace, Rank::Ace, Rank::Queen, Rank::Ace, Rank::Ace);
 
@@ -38,7 +38,7 @@ pub fn get_type_full_house() {
 }
 
 #[test]
-pub fn get_type_three_of_a_kind() {
+pub fn get_type_3_of_a_kind() {
     let hand =
         Hand::new(Rank::Ace, Rank::Ace, Rank::Queen, Rank::Two, Rank::Ace);
 
@@ -46,7 +46,7 @@ pub fn get_type_three_of_a_kind() {
 }
 
 #[test]
-pub fn get_type_two_pair() {
+pub fn get_type_2_pair() {
     let hand =
         Hand::new(Rank::Ace, Rank::Ace, Rank::Queen, Rank::Two, Rank::Queen);
 
@@ -143,4 +143,100 @@ pub fn ord_same_type_goes_by_rank() {
         Hand::new(Rank::Ace, Rank::Ace, Rank::Three, Rank::Three, Rank::Ace);
 
     assert_eq!(Ordering::Less, hand_1.cmp(&hand_2));
+}
+
+#[test]
+pub fn get_type_with_jokers_5_jokers_5_of_a_kind() {
+    let hand =
+        Hand::new(Rank::Jack, Rank::Jack, Rank::Jack, Rank::Jack, Rank::Jack);
+
+    assert_eq!(HandType::FiveOfAKind, hand.get_type_with_jokers());
+}
+
+#[test]
+pub fn get_type_with_jokers_4_jokers_5_of_a_kind() {
+    let hand =
+        Hand::new(Rank::Jack, Rank::Ace, Rank::Jack, Rank::Jack, Rank::Jack);
+
+    assert_eq!(HandType::FiveOfAKind, hand.get_type_with_jokers());
+}
+
+#[test]
+pub fn get_type_with_jokers_3_jokers_one_pair_5_of_a_kind() {
+    let hand =
+        Hand::new(Rank::Jack, Rank::Ace, Rank::Ace, Rank::Jack, Rank::Jack);
+
+    assert_eq!(HandType::FiveOfAKind, hand.get_type_with_jokers());
+}
+
+#[test]
+pub fn get_type_with_jokers_3_jokers_4_of_a_kind() {
+    let hand =
+        Hand::new(Rank::Jack, Rank::Ace, Rank::Two, Rank::Jack, Rank::Jack);
+
+    assert_eq!(HandType::FourOfAKind, hand.get_type_with_jokers());
+}
+
+#[test]
+pub fn get_type_with_jokers_2_jokers_3_dupes_5_of_a_kind() {
+    let hand =
+        Hand::new(Rank::Ace, Rank::Ace, Rank::Ace, Rank::Jack, Rank::Jack);
+
+    assert_eq!(HandType::FiveOfAKind, hand.get_type_with_jokers());
+}
+
+#[test]
+pub fn get_type_with_jokers_2_jokers_2_dupes_4_of_a_kind() {
+    let hand =
+        Hand::new(Rank::Ace, Rank::Ace, Rank::Two, Rank::Jack, Rank::Jack);
+
+    assert_eq!(HandType::FourOfAKind, hand.get_type_with_jokers());
+}
+
+#[test]
+pub fn get_type_with_jokers_2_jokers_no_dupes_3_of_a_kind() {
+    let hand =
+        Hand::new(Rank::Ace, Rank::Three, Rank::Two, Rank::Jack, Rank::Jack);
+
+    assert_eq!(HandType::FourOfAKind, hand.get_type_with_jokers());
+}
+
+#[test]
+pub fn get_type_with_jokers_1_jokers_4_dupes_5_of_a_kind() {
+    let hand =
+        Hand::new(Rank::Ace, Rank::Ace, Rank::Ace, Rank::Ace, Rank::Jack);
+
+    assert_eq!(HandType::FiveOfAKind, hand.get_type_with_jokers());
+}
+
+#[test]
+pub fn get_type_with_jokers_1_jokers_3_dupes_4_of_a_kind() {
+    let hand =
+        Hand::new(Rank::Ace, Rank::Ace, Rank::Ace, Rank::Two, Rank::Jack);
+
+    assert_eq!(HandType::FourOfAKind, hand.get_type_with_jokers());
+}
+
+#[test]
+pub fn get_type_with_jokers_1_jokers_2_pair_full_house() {
+    let hand =
+        Hand::new(Rank::Ace, Rank::Ace, Rank::Two, Rank::Two, Rank::Jack);
+
+    assert_eq!(HandType::FullHouse, hand.get_type_with_jokers());
+}
+
+#[test]
+pub fn get_type_with_jokers_1_jokers_2_dupes_three_of_a_kind() {
+    let hand =
+        Hand::new(Rank::Ace, Rank::Ace, Rank::Two, Rank::Three, Rank::Jack);
+
+    assert_eq!(HandType::ThreeOfAKind, hand.get_type_with_jokers());
+}
+
+#[test]
+pub fn get_type_with_jokers_1_jokers_no_dupes_one_pair() {
+    let hand =
+        Hand::new(Rank::Ace, Rank::Four, Rank::Two, Rank::Three, Rank::Jack);
+
+    assert_eq!(HandType::OnePair, hand.get_type_with_jokers());
 }
