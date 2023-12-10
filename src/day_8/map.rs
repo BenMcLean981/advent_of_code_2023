@@ -8,14 +8,14 @@ pub struct Map {
 }
 
 impl Map {
-    pub fn from_edges(edges: Vec<&Edge>) -> Self {
+    pub fn from_edges(edges: &Vec<Edge>) -> Self {
         return Map {
-            left_map: Self::make_left_map(&edges),
-            right_map: Self::make_right_map(&edges),
+            left_map: Self::make_left_map(edges),
+            right_map: Self::make_right_map(edges),
         };
     }
 
-    fn make_left_map(edges: &Vec<&Edge>) -> HashMap<String, String> {
+    fn make_left_map(edges: &Vec<Edge>) -> HashMap<String, String> {
         let mut result = HashMap::<String, String>::new();
 
         for edge in edges {
@@ -25,7 +25,7 @@ impl Map {
         return result;
     }
 
-    fn make_right_map(edges: &Vec<&Edge>) -> HashMap<String, String> {
+    fn make_right_map(edges: &Vec<Edge>) -> HashMap<String, String> {
         let mut result = HashMap::<String, String>::new();
 
         for edge in edges {
