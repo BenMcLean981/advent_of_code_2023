@@ -6,3 +6,4 @@ pub mod day_5_tests;
 pub mod day_6_tests;
 pub mod day_7_tests;
 pub mod day_8_tests;
+pub mod day_9_tests;
