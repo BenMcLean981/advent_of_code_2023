@@ -25,3 +25,31 @@ impl From<char> for TileType {
         };
     }
 }
+
+impl TileType {
+    pub fn get_connections(&self) -> Vec<Connection> {
+        return match self {
+            TileType::Vertical => vec![Connection::North, Connection::South],
+            TileType::Horizontal => vec![Connection::East, Connection::West],
+            TileType::NorthEast => vec![Connection::North, Connection::East],
+            TileType::NorthWest => vec![Connection::North, Connection::West],
+            TileType::SouthWest => vec![Connection::South, Connection::West],
+            TileType::SouthEast => vec![Connection::South, Connection::East],
+            TileType::Start => vec![
+                Connection::North,
+                Connection::East,
+                Connection::South,
+                Connection::West,
+            ],
+            TileType::Ground => panic!(),
+        };
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum Connection {
+    North,
+    East,
+    South,
+    West,
+}
