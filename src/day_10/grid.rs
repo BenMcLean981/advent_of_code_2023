@@ -6,8 +6,8 @@ use super::{
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Grid {
     rows: Vec<Vec<TileType>>,
-    num_cols: usize,
-    num_rows: usize,
+    pub num_cols: usize,
+    pub num_rows: usize,
 }
 
 impl Grid {

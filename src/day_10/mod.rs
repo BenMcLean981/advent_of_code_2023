@@ -1,3 +1,4 @@
+pub mod area_calculator;
 pub mod grid;
 pub mod loop_finder;
 pub mod position;
