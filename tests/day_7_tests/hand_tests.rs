@@ -240,3 +240,13 @@ pub fn get_type_with_jokers_1_jokers_no_dupes_one_pair() {
 
     assert_eq!(HandType::OnePair, hand.get_type_with_jokers());
 }
+
+#[test]
+pub fn cmp_with_jokers_goes_by_other_cards() {
+    let first =
+        Hand::new(Rank::Jack, Rank::Two, Rank::Ten, Rank::King, Rank::Seven);
+    let second =
+        Hand::new(Rank::Two, Rank::Two, Rank::King, Rank::Six, Rank::Five);
+
+    assert_eq!(Ordering::Less, first.cmp_with_jokers(&second));
+}

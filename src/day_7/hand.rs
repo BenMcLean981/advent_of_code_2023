@@ -54,11 +54,11 @@ impl Hand {
 
         let ordering = get_first_difference(vec![
             t.cmp(&other_t),
-            self.card_1.cmp(&other.card_1),
-            self.card_2.cmp(&other.card_2),
-            self.card_3.cmp(&other.card_3),
-            self.card_4.cmp(&other.card_4),
-            self.card_5.cmp(&other.card_5),
+            self.card_1.cmp_with_jokers(&other.card_1),
+            self.card_2.cmp_with_jokers(&other.card_2),
+            self.card_3.cmp_with_jokers(&other.card_3),
+            self.card_4.cmp_with_jokers(&other.card_4),
+            self.card_5.cmp_with_jokers(&other.card_5),
         ]);
 
         return ordering;
@@ -107,9 +107,11 @@ impl Hand {
 
         if number_counts == 4 {
             return HandType::OnePair;
+        } else if number_counts == 5 {
+            return HandType::HighCard;
         }
 
-        return HandType::HighCard;
+        panic!()
     }
 
     fn get_counts(&self) -> HashMap<Rank, u32> {
