@@ -20,23 +20,74 @@ pub fn solve() {
         .collect::<Vec<Edge>>();
     let map = Map::from_edges(&edges);
 
-    let num_directions_followed = count_directions_followed(map, directions);
+    let num_directions_followed =
+        count_directions_followed(&map, &directions, "AAA", "ZZZ");
+    let all_followed = count_multiple_directions_followed(&map, &directions);
 
     println!("Day 8");
     println!("The number of directions to leave the desert is {num_directions_followed}.");
+    println!("The number of directions to leave the desert as a ghost is {all_followed}.");
 }
 
-fn count_directions_followed(map: Map, directions: Vec<Direction>) -> u32 {
-    let mut node = "AAA";
+fn count_directions_followed(
+    map: &Map,
+    directions: &Vec<Direction>,
+    start: &str,
+    end: &str,
+) -> u64 {
+    let mut node = start;
     let mut count = 0;
 
-    while node != "ZZZ" && count < 100_000 {
+    // it is possible that this doesn't work for part 1
+    // for example a node with BZZZ would count as the end.
+    // in my case at least the inputs don't cause this.
+
+    while !node.ends_with(end) {
         let direction_index = count % directions.len();
         let direction = directions[direction_index];
 
         node = map.get_next(node, direction);
         count += 1;
+
+        if count >= 100_000 {
+            panic!();
+        }
     }
 
-    return count as u32;
+    return count as u64;
+}
+
+fn count_multiple_directions_followed(
+    map: &Map,
+    directions: &Vec<Direction>,
+) -> u64 {
+    let nodes = map.get_starts();
+    let counts = nodes
+        .iter()
+        .map(|n| count_directions_followed(map, directions, n, "Z"))
+        .collect();
+
+    return multiple_lcm(counts);
+}
+
+fn multiple_lcm(nums: Vec<u64>) -> u64 {
+    let mut result = nums[0];
+
+    for num in nums.iter().skip(1) {
+        result = lcm(result, *num);
+    }
+
+    return result;
+}
+
+fn lcm(a: u64, b: u64) -> u64 {
+    return a * b / gcd(a, b);
+}
+
+fn gcd(a: u64, b: u64) -> u64 {
+    if b == 0 {
+        return a;
+    } else {
+        return gcd(b, a % b);
+    }
 }

@@ -49,4 +49,13 @@ impl Map {
     fn get_right(&self, node: &str) -> &str {
         return self.right_map.get(node).unwrap();
     }
+
+    pub fn get_starts(&self) -> Vec<&str> {
+        return self
+            .left_map
+            .keys()
+            .filter(|node| node.ends_with("A"))
+            .map(|s| s.as_str())
+            .collect::<Vec<&str>>();
+    }
 }
