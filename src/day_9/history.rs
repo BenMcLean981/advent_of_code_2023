@@ -41,6 +41,27 @@ impl History {
     fn get_last(&self) -> i32 {
         return *self.values.last().unwrap();
     }
+
+    pub fn get_prev(&self) -> i32 {
+        if self.is_zero() {
+            return 0;
+        } else {
+            self.get_prev_from_derivative()
+        }
+    }
+
+    fn get_prev_from_derivative(&self) -> i32 {
+        let derivative = self.compute_derivative();
+        if derivative.is_zero() {
+            return self.get_first();
+        } else {
+            return self.get_first() - derivative.get_prev();
+        }
+    }
+
+    fn get_first(&self) -> i32 {
+        return *self.values.first().unwrap();
+    }
 }
 
 #[derive(Debug, PartialEq, Eq)]

@@ -49,15 +49,36 @@ pub fn get_next_zeros_returns_zero() {
 }
 
 #[test]
-pub fn zero_derivative_returns_last() {
+pub fn get_next_zero_derivative_returns_last() {
     let history = History::new(vec![5, 5, 5]);
 
     assert_eq!(5, history.get_next());
 }
 
 #[test]
-pub fn non_zero_derivative_computes_recursively() {
+pub fn get_next_non_zero_derivative_computes_recursively() {
     let history = History::new(vec![10, 13, 16, 21, 30, 45]);
 
     assert_eq!(68, history.get_next());
+}
+
+#[test]
+pub fn get_prev_zeros_returns_zero() {
+    let history = History::new(vec![0, 0, 0]);
+
+    assert_eq!(0, history.get_prev());
+}
+
+#[test]
+pub fn get_prev_zero_derivative_returns_last() {
+    let history = History::new(vec![5, 5, 5]);
+
+    assert_eq!(5, history.get_prev());
+}
+
+#[test]
+pub fn get_prev_non_zero_derivative_computes_recursively() {
+    let history = History::new(vec![10, 13, 16, 21, 30, 45]);
+
+    assert_eq!(5, history.get_prev());
 }

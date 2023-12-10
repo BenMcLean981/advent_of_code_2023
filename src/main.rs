@@ -30,4 +30,7 @@ fn main() {
 
     println!();
     day_8::solution::solve();
+
+    println!();
+    day_9::solution::solve();
 }
