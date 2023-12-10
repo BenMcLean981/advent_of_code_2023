@@ -100,11 +100,13 @@ pub fn get_available_positions() {
         vec![
             TileType::Ground,
             TileType::Ground,
+            TileType::Ground,
             TileType::SouthEast,
             TileType::SouthWest,
             TileType::Ground,
         ],
         vec![
+            TileType::Ground,
             TileType::Ground,
             TileType::SouthEast,
             TileType::NorthWest,
@@ -112,6 +114,7 @@ pub fn get_available_positions() {
             TileType::Ground,
         ],
         vec![
+            TileType::Vertical,
             TileType::Start,
             TileType::NorthWest,
             TileType::Ground,
@@ -119,6 +122,7 @@ pub fn get_available_positions() {
             TileType::SouthWest,
         ],
         vec![
+            TileType::Ground,
             TileType::Vertical,
             TileType::SouthEast,
             TileType::Horizontal,
@@ -126,6 +130,7 @@ pub fn get_available_positions() {
             TileType::NorthWest,
         ],
         vec![
+            TileType::Ground,
             TileType::NorthEast,
             TileType::NorthWest,
             TileType::Ground,
@@ -134,13 +139,14 @@ pub fn get_available_positions() {
         ],
     ]);
 
-    let expected = vec![Position::new(4, 1), Position::new(3, 2)];
-    let actual = grid.get_available_positions(Position::new(3, 1));
+    let expected = vec![Position::new(4, 2), Position::new(3, 3)];
+    let actual = grid.get_available_positions(Position::new(3, 2));
 
     assert_eq!(true, have_same_items(expected, actual));
 
-    let expected = vec![Position::new(2, 1), Position::new(3, 0)];
-    let actual = grid.get_available_positions(Position::new(2, 0));
+    // start
+    let expected = vec![Position::new(2, 2), Position::new(3, 1)];
+    let actual = grid.get_available_positions(Position::new(2, 1));
 
     assert_eq!(true, have_same_items(expected, actual));
 }

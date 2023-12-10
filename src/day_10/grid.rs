@@ -3,7 +3,7 @@ use super::{
     tile_type::{Connection, TileType},
 };
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Grid {
     rows: Vec<Vec<TileType>>,
     num_cols: usize,
@@ -35,6 +35,20 @@ impl Grid {
             .collect::<Vec<TileType>>();
     }
 
+    pub fn get_start_position(&self) -> Position {
+        for (row_num, row) in self.rows.iter().enumerate() {
+            for (col_num, _) in row.iter().enumerate() {
+                let position = Position::new(row_num as i32, col_num as i32);
+
+                if self.get_at_position(&position) == TileType::Start {
+                    return position;
+                }
+            }
+        }
+
+        panic!("No start location.");
+    }
+
     pub fn get_at_position(&self, position: &Position) -> TileType {
         if position.row.is_negative() || position.col.is_negative() {
             panic!();
@@ -53,6 +67,10 @@ impl Grid {
         if let Some(north) = north {
             if !self.is_ground(&north)
                 && connections.contains(&Connection::North)
+                && self
+                    .get_at_position(&north)
+                    .get_connections()
+                    .contains(&Connection::South)
             {
                 results.push(north);
             }
@@ -60,7 +78,12 @@ impl Grid {
 
         let east = self.get_east(&position);
         if let Some(east) = east {
-            if !self.is_ground(&east) && connections.contains(&Connection::East)
+            if !self.is_ground(&east)
+                && connections.contains(&Connection::East)
+                && self
+                    .get_at_position(&east)
+                    .get_connections()
+                    .contains(&Connection::West)
             {
                 results.push(east);
             }
@@ -70,6 +93,10 @@ impl Grid {
         if let Some(south) = south {
             if !self.is_ground(&south)
                 && connections.contains(&Connection::South)
+                && self
+                    .get_at_position(&south)
+                    .get_connections()
+                    .contains(&Connection::North)
             {
                 results.push(south);
             }
@@ -77,7 +104,12 @@ impl Grid {
 
         let west = self.get_west(&position);
         if let Some(west) = west {
-            if !self.is_ground(&west) && connections.contains(&Connection::West)
+            if !self.is_ground(&west)
+                && connections.contains(&Connection::West)
+                && self
+                    .get_at_position(&west)
+                    .get_connections()
+                    .contains(&Connection::East)
             {
                 results.push(west);
             }
