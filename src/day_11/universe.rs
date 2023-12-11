@@ -1,20 +1,20 @@
 #[derive(Debug, PartialEq, Eq)]
-pub struct Grid {
+pub struct Universe {
     rows: Vec<Vec<bool>>,
     cols: Vec<Vec<bool>>,
 }
 
-impl Grid {
+impl Universe {
     pub fn new(rows: Vec<Vec<bool>>) -> Self {
         let cols = transpose(&rows);
 
-        return Grid { rows, cols };
+        return Universe { rows, cols };
     }
 
     pub fn from_lines(lines: Vec<&str>) -> Self {
-        let rows = lines.iter().map(|l| Grid::read_row(l)).collect();
+        let rows = lines.iter().map(|l| Universe::read_row(l)).collect();
 
-        return Grid::new(rows);
+        return Universe::new(rows);
     }
 
     fn read_row(line: &str) -> Vec<bool> {

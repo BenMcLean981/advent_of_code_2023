@@ -1,8 +1,8 @@
-use advent_of_code_2023::day_11::grid::Grid;
+use advent_of_code_2023::day_11::universe::Universe;
 
 #[test]
 pub fn from_lines_makes_grids() {
-    let actual = Grid::from_lines(vec![
+    let actual = Universe::from_lines(vec![
         "...#.......",
         "........#..",
         "#..........",
@@ -15,7 +15,7 @@ pub fn from_lines_makes_grids() {
         "#...#......",
     ]);
 
-    let expected = Grid::new(vec![
+    let expected = Universe::new(vec![
         vec![
             false, false, false, true, false, false, false, false, false,
             false, false,
