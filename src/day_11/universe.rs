@@ -20,9 +20,34 @@ impl Universe {
     fn read_row(line: &str) -> Vec<bool> {
         return line.trim().chars().map(|c| c == '#').collect();
     }
+
+    pub fn expand(&self) -> Universe {
+        let rows = Universe::expand_vecs(&self.rows);
+
+        let cols = transpose(&rows);
+        let cols = Universe::expand_vecs(&cols);
+
+        let rows = transpose(&cols);
+
+        return Universe { rows, cols };
+    }
+
+    fn expand_vecs(vecs: &Vec<Vec<bool>>) -> Vec<Vec<bool>> {
+        let mut results: Vec<Vec<bool>> = vec![];
+
+        for vec in vecs {
+            if is_empty(vec) {
+                results.push(make_empty(vec.len()))
+            }
+
+            results.push(vec.clone());
+        }
+
+        return results;
+    }
 }
 
-fn transpose<T: Copy>(vecs: &Vec<Vec<T>>) -> Vec<Vec<T>> {
+pub fn transpose<T: Copy>(vecs: &Vec<Vec<T>>) -> Vec<Vec<T>> {
     let mut result: Vec<Vec<T>> = vec![];
 
     for row in vecs {
@@ -36,4 +61,12 @@ fn transpose<T: Copy>(vecs: &Vec<Vec<T>>) -> Vec<Vec<T>> {
     }
 
     return result;
+}
+
+fn is_empty(vec: &Vec<bool>) -> bool {
+    return vec.iter().all(|b| !b);
+}
+
+fn make_empty(size: usize) -> Vec<bool> {
+    return vec![false; size];
 }
