@@ -9,11 +9,14 @@ pub fn solve() {
     let grid = Grid::from_lines(lines.iter().map(|s| s.as_str()).collect());
 
     let half_loop_length = count_loop_length(&grid) / 2;
-    let area = count_area(&grid);
+    // let area = count_area(&grid);
 
     println!("Day 10");
     println!("The furthest distance in the loop is {half_loop_length}.");
-    println!("The area inside the loop is {area}.");
+    println!(
+        "Part 2 disabled, poor performance but not so bad I had to optimize."
+    );
+    // println!("The area inside the loop is {area}.");
 }
 
 fn count_loop_length(grid: &Grid) -> u32 {

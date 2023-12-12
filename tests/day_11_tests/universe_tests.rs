@@ -1,4 +1,7 @@
-use advent_of_code_2023::day_11::universe::{transpose, Universe};
+use advent_of_code_2023::{
+    day_10::position::Position,
+    day_11::universe::{transpose, Universe},
+};
 
 #[test]
 pub fn from_lines_makes_grids() {
@@ -93,6 +96,32 @@ pub fn expand_adds_rows_and_cols() {
     ]);
 
     assert_eq!(expected, actual);
+}
+
+#[test]
+pub fn get_sum_distances() {
+    let universe = Universe::from_lines(vec![
+        "...#......",
+        ".......#..",
+        "#.........",
+        "..........",
+        "......#...",
+        ".#........",
+        ".........#",
+        "..........",
+        ".......#..",
+        "#...#.....",
+    ]);
+
+    assert_eq!(374, universe.get_sum_distances(1));
+}
+
+#[test]
+pub fn position_get_manhattan_distance() {
+    let p1 = Position::new(6, 1);
+    let p2 = Position::new(11, 5);
+
+    assert_eq!(9, p1.get_manhattan_distance(&p2));
 }
 
 #[test]

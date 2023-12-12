@@ -1,3 +1,7 @@
+use std::collections::HashSet;
+
+use crate::day_10::position::Position;
+
 #[derive(Debug, PartialEq, Eq)]
 pub struct Universe {
     rows: Vec<Vec<bool>>,
@@ -45,6 +49,32 @@ impl Universe {
 
         return results;
     }
+
+    pub fn get_sum_distances(&self, expansion: u32) -> u32 {
+        let galaxies = self.get_galaxies();
+
+        let pairs = get_pairs(galaxies.iter());
+
+        return pairs
+            .iter()
+            .map(|p| p.0.get_manhattan_distance(p.1))
+            .fold(0, |sum, i| sum + i);
+    }
+
+    fn get_galaxies(&self) -> HashSet<Position> {
+        let mut result = HashSet::<Position>::new();
+
+        for (i, row) in self.rows.iter().enumerate() {
+            for (j, is_galaxy) in row.iter().enumerate() {
+                if *is_galaxy {
+                    let position = Position::new(i as i32, j as i32);
+                    result.insert(position);
+                }
+            }
+        }
+
+        return result;
+    }
 }
 
 pub fn transpose<T: Copy>(vecs: &Vec<Vec<T>>) -> Vec<Vec<T>> {
@@ -57,6 +87,20 @@ pub fn transpose<T: Copy>(vecs: &Vec<Vec<T>>) -> Vec<Vec<T>> {
             } else {
                 result[i].push(*col);
             }
+        }
+    }
+
+    return result;
+}
+
+fn get_pairs<T: Copy>(items: impl Iterator<Item = T>) -> Vec<(T, T)> {
+    let mut result: Vec<(T, T)> = vec![];
+
+    let items = &items.collect::<Vec<T>>();
+
+    for (i, item1) in items.clone().iter().enumerate() {
+        for item2 in items.iter().skip(i + 1) {
+            result.push((*item1, *item2));
         }
     }
 
