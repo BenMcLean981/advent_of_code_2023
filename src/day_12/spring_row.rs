@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use super::sequence::Sequence;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct SpringRow {
     springs: Vec<SpringType>,
 }
@@ -29,12 +29,70 @@ impl SpringRow {
         let is_last_unclear =
             last.is_none() || *last.unwrap() == SpringType::Damaged;
 
-        if lengths.len() > 0 && is_last_unclear {
-            return Sequence::new(lengths[0..lengths.len() - 1].to_vec());
+        if !self.is_done() && lengths.len() > 0 && is_last_unclear {
+            return Sequence::make_unclear(lengths[0..lengths.len()].to_vec());
         } else {
-            return Sequence::new(lengths);
+            return Sequence::make_clear(lengths);
         }
     }
+
+    pub fn is_done(&self) -> bool {
+        return self.springs.iter().all(|s| *s != SpringType::Unknown);
+    }
+
+    pub fn fill_next(&self) -> (SpringRow, SpringRow) {
+        if self.is_done() {
+            panic!();
+        }
+
+        return (
+            self.replace_first_unknown(SpringType::Operational),
+            self.replace_first_unknown(SpringType::Damaged),
+        );
+    }
+
+    fn replace_first_unknown(&self, v: SpringType) -> SpringRow {
+        let mut result: Vec<SpringType> = vec![];
+
+        for (i, s) in self.springs.iter().enumerate() {
+            if *s == SpringType::Unknown {
+                result.push(v);
+                result.extend(self.springs.iter().skip(i + 1).map(|s| *s));
+                break;
+            } else {
+                result.push(*s);
+            }
+        }
+
+        return SpringRow::new(result);
+    }
+}
+
+pub fn count_possible_rows(row: SpringRow, sequence: &Sequence) -> usize {
+    let mut pending: Vec<SpringRow> = vec![row];
+    let mut valid: Vec<SpringRow> = vec![];
+
+    while !pending.is_empty() {
+        let row = pending.pop().unwrap();
+
+        if !row.is_done() {
+            let next = row.fill_next();
+
+            if next.0.get_sequence().is_partial(sequence) {
+                pending.push(next.0);
+            }
+
+            if next.1.get_sequence().is_partial(sequence) {
+                pending.push(next.1);
+            }
+        } else if row.get_sequence() == *sequence {
+            valid.push(row);
+        } else {
+            assert!(true);
+        }
+    }
+
+    return valid.len();
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -51,7 +109,7 @@ impl FromStr for SpringRow {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum SpringType {
     Operational,
     Damaged,
