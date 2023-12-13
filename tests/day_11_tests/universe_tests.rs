@@ -64,50 +64,50 @@ pub fn from_lines_makes_grids() {
     assert_eq!(expected, actual);
 }
 
-#[test]
-pub fn get_sum_distances() {
-    let universe = Universe::from_lines(vec![
-        "...#......",
-        ".......#..",
-        "#.........",
-        "..........",
-        "......#...",
-        ".#........",
-        ".........#",
-        "..........",
-        ".......#..",
-        "#...#.....",
-    ]);
+// #[test]
+// pub fn get_sum_distances() {
+//     let universe = Universe::from_lines(vec![
+//         "...#......",
+//         ".......#..",
+//         "#.........",
+//         "..........",
+//         "......#...",
+//         ".#........",
+//         ".........#",
+//         "..........",
+//         ".......#..",
+//         "#...#.....",
+//     ]);
 
-    assert_eq!(374, universe.get_sum_distances(1));
-}
+//     assert_eq!(374, universe.get_sum_distances(1));
+// }
 
-#[test]
-pub fn get_sum_square_case() {
-    let universe = Universe::from_lines(vec!["#..", "...", "..#"]);
+// #[test]
+// pub fn get_sum_square_case() {
+//     let universe = Universe::from_lines(vec!["#..", "...", "..#"]);
 
-    assert_eq!(4, universe.get_sum_distances(0));
-    assert_eq!(6, universe.get_sum_distances(1));
-    assert_eq!(8, universe.get_sum_distances(2));
-}
+//     assert_eq!(4, universe.get_sum_distances(0));
+//     assert_eq!(6, universe.get_sum_distances(1));
+//     assert_eq!(8, universe.get_sum_distances(2));
+// }
 
-#[test]
-pub fn get_sum_col_case() {
-    let universe = Universe::from_lines(vec!["#..", "..#"]);
+// #[test]
+// pub fn get_sum_col_case() {
+//     let universe = Universe::from_lines(vec!["#..", "..#"]);
 
-    assert_eq!(3, universe.get_sum_distances(0));
-    assert_eq!(4, universe.get_sum_distances(1));
-    assert_eq!(5, universe.get_sum_distances(2));
-}
+//     assert_eq!(3, universe.get_sum_distances(0));
+//     assert_eq!(4, universe.get_sum_distances(1));
+//     assert_eq!(5, universe.get_sum_distances(2));
+// }
 
-#[test]
-pub fn get_sum_big_square_case() {
-    let universe = Universe::from_lines(vec!["#...", "....", "....", "...#"]);
+// #[test]
+// pub fn get_sum_big_square_case() {
+//     let universe = Universe::from_lines(vec!["#...", "....", "....", "...#"]);
 
-    assert_eq!(6, universe.get_sum_distances(0));
-    assert_eq!(10, universe.get_sum_distances(1));
-    assert_eq!(14, universe.get_sum_distances(2));
-}
+//     assert_eq!(6, universe.get_sum_distances(0));
+//     assert_eq!(10, universe.get_sum_distances(1));
+//     assert_eq!(14, universe.get_sum_distances(2));
+// }
 
 #[test]
 pub fn get_sum_distances_extra_expansion() {

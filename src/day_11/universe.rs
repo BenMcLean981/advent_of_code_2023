@@ -57,10 +57,12 @@ impl Universe {
         let row_diff = p1.row.abs_diff(p2.row);
         let col_diff = p1.col.abs_diff(p2.col);
 
+        let expansion = if expansion == 0 { 0 } else { expansion - 1 };
+
         return row_diff as u64
             + col_diff as u64
-            + empty_rows as u64 * (expansion as u64 - 1)
-            + empty_cols as u64 * (expansion as u64 - 1);
+            + empty_rows as u64 * expansion as u64
+            + empty_cols as u64 * expansion as u64;
     }
 
     fn count_empty_rows(&self, start: usize, end: usize) -> usize {
