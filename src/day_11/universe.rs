@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::{cmp, collections::HashSet};
 
 use crate::day_10::position::Position;
 
@@ -6,13 +6,20 @@ use crate::day_10::position::Position;
 pub struct Universe {
     rows: Vec<Vec<bool>>,
     cols: Vec<Vec<bool>>,
+    empty_rows: HashSet<usize>,
+    empty_cols: HashSet<usize>,
 }
 
 impl Universe {
     pub fn new(rows: Vec<Vec<bool>>) -> Self {
         let cols = transpose(&rows);
 
-        return Universe { rows, cols };
+        return Universe {
+            empty_rows: map_empty(&rows),
+            empty_cols: map_empty(&cols),
+            rows,
+            cols,
+        };
     }
 
     pub fn from_lines(lines: Vec<&str>) -> Self {
@@ -25,40 +32,53 @@ impl Universe {
         return line.trim().chars().map(|c| c == '#').collect();
     }
 
-    pub fn expand(&self) -> Universe {
-        let rows = Universe::expand_vecs(&self.rows);
-
-        let cols = transpose(&rows);
-        let cols = Universe::expand_vecs(&cols);
-
-        let rows = transpose(&cols);
-
-        return Universe { rows, cols };
-    }
-
-    fn expand_vecs(vecs: &Vec<Vec<bool>>) -> Vec<Vec<bool>> {
-        let mut results: Vec<Vec<bool>> = vec![];
-
-        for vec in vecs {
-            if is_empty(vec) {
-                results.push(make_empty(vec.len()))
-            }
-
-            results.push(vec.clone());
-        }
-
-        return results;
-    }
-
-    pub fn get_sum_distances(&self, expansion: u32) -> u32 {
+    pub fn get_sum_distances(&self, expansion: u32) -> u64 {
         let galaxies = self.get_galaxies();
 
         let pairs = get_pairs(galaxies.iter());
 
         return pairs
             .iter()
-            .map(|p| p.0.get_manhattan_distance(p.1))
+            .map(|p| self.get_manhattan_distance(p.0, p.1, expansion))
             .fold(0, |sum, i| sum + i);
+    }
+
+    fn get_manhattan_distance(
+        &self,
+        p1: &Position,
+        p2: &Position,
+        expansion: u32,
+    ) -> u64 {
+        let empty_rows =
+            self.count_empty_rows(p1.row as usize, p2.row as usize);
+        let empty_cols =
+            self.count_empty_cols(p1.col as usize, p2.col as usize);
+
+        let row_diff = p1.row.abs_diff(p2.row);
+        let col_diff = p1.col.abs_diff(p2.col);
+
+        return row_diff as u64
+            + col_diff as u64
+            + empty_rows as u64 * (expansion as u64 - 1)
+            + empty_cols as u64 * (expansion as u64 - 1);
+    }
+
+    fn count_empty_rows(&self, start: usize, end: usize) -> usize {
+        return Universe::count_empty(&self.empty_rows, start, end);
+    }
+
+    fn count_empty_cols(&self, start: usize, end: usize) -> usize {
+        return Universe::count_empty(&self.empty_cols, start, end);
+    }
+
+    fn count_empty(set: &HashSet<usize>, start: usize, end: usize) -> usize {
+        let low = cmp::min(start, end);
+        let high = cmp::max(start, end);
+
+        // there's another way to do this but it's slower, you can loop over
+        // [low..high] and check for in set, but that size is larger than
+        // size of set, it is proportional to distance.
+        return set.iter().filter(|v| low < **v && **v < high).count();
     }
 
     fn get_galaxies(&self) -> HashSet<Position> {
@@ -107,10 +127,15 @@ fn get_pairs<T: Copy>(items: impl Iterator<Item = T>) -> Vec<(T, T)> {
     return result;
 }
 
-fn is_empty(vec: &Vec<bool>) -> bool {
-    return vec.iter().all(|b| !b);
+fn map_empty(vecs: &Vec<Vec<bool>>) -> HashSet<usize> {
+    return vecs
+        .iter()
+        .enumerate()
+        .filter(|(_, vec)| is_empty(vec))
+        .map(|(i, _)| i)
+        .collect::<HashSet<usize>>();
 }
 
-fn make_empty(size: usize) -> Vec<bool> {
-    return vec![false; size];
+fn is_empty(vec: &Vec<bool>) -> bool {
+    return vec.iter().all(|b| !b);
 }

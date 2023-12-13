@@ -5,10 +5,12 @@ pub fn solve() {
 
     let binding = read_lines(filename);
     let lines = binding.iter().map(|s| s.as_str()).collect();
-    let universe = Universe::from_lines(lines).expand();
+    let universe = Universe::from_lines(lines);
 
-    let distance = universe.get_sum_distances(1);
+    let d = universe.get_sum_distances(1);
+    let big_d = universe.get_sum_distances(1_000_000);
 
     println!("Day 11");
-    println!("The sum of the distances between galaxies is {distance}.");
+    println!("The sum of the distances between galaxies with is {d}.");
+    println!("The sum of the distances between galaxies with 1M expansions is {big_d}.");
 }
