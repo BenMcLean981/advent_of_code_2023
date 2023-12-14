@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Sequence {
     sequence: Vec<usize>,
     next_unclear: bool,
@@ -53,6 +53,30 @@ impl Sequence {
         }
 
         return Sequence::make_clear(result);
+    }
+
+    pub fn len(&self) -> usize {
+        return self.sequence.len();
+    }
+
+    pub fn sum(&self) -> usize {
+        return self.sequence.iter().sum();
+    }
+
+    pub fn first(&self) -> Option<usize> {
+        let first = self.sequence.first();
+
+        if first.is_none() {
+            return None;
+        } else {
+            return Some(*first.unwrap());
+        }
+    }
+
+    pub fn skip_first(&self) -> Sequence {
+        return Sequence::make_clear(
+            self.sequence.iter().skip(1).map(|s| s.clone()).collect(),
+        );
     }
 }
 

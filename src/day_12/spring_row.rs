@@ -1,8 +1,8 @@
-use std::str::FromStr;
+use std::{collections::HashMap, str::FromStr};
 
 use super::sequence::Sequence;
 
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct SpringRow {
     springs: Vec<SpringType>,
 }
@@ -22,106 +22,104 @@ impl SpringRow {
         return SpringRow::new(springs);
     }
 
-    pub fn get_sequence(&self) -> Sequence {
-        let before_unknown = self
-            .springs
-            .split(|s| *s == SpringType::Unknown)
-            .nth(0)
-            .unwrap();
-
-        let lengths = before_unknown
-            .split(|s| *s == SpringType::Operational)
-            .filter(|s| !s.is_empty())
-            .map(|s| s.len())
-            .collect::<Vec<usize>>();
-
-        let last = before_unknown.last();
-        let is_last_unclear =
-            last.is_none() || *last.unwrap() == SpringType::Damaged;
-
-        if !self.is_done() && lengths.len() > 0 && is_last_unclear {
-            return Sequence::make_unclear(lengths[0..lengths.len()].to_vec());
-        } else {
-            return Sequence::make_clear(lengths);
-        }
+    pub fn len(&self) -> usize {
+        return self.springs.len();
     }
 
-    pub fn is_done(&self) -> bool {
-        return self.springs.iter().all(|s| *s != SpringType::Unknown);
+    pub fn skip_first(&self) -> SpringRow {
+        return self.skip(1);
     }
 
-    pub fn fill_next(&self) -> (SpringRow, SpringRow) {
-        if self.is_done() {
-            panic!();
-        }
-
-        return (
-            self.replace_first_unknown(SpringType::Operational),
-            self.replace_first_unknown(SpringType::Damaged),
+    pub fn skip(&self, num: usize) -> SpringRow {
+        return SpringRow::new(
+            self.springs.iter().skip(num).map(|s| s.clone()).collect(),
         );
     }
 
-    fn replace_first_unknown(&self, v: SpringType) -> SpringRow {
-        let mut result: Vec<SpringType> = vec![];
+    pub fn set_first(&self, spring: SpringType) -> SpringRow {
+        let mut springs = vec![spring];
 
-        for (i, s) in self.springs.iter().enumerate() {
-            if *s == SpringType::Unknown {
-                result.push(v);
-                result.extend(self.springs.iter().skip(i + 1).map(|s| *s));
-                break;
-            } else {
-                result.push(*s);
-            }
-        }
-
-        return SpringRow::new(result);
-    }
-
-    pub fn append(&self) -> Self {
-        let mut springs = self.springs.clone();
-        springs.push(SpringType::Unknown);
-
-        return SpringRow::new(springs);
-    }
-
-    pub fn prepend(&self) -> Self {
-        let mut springs = vec![SpringType::Unknown];
-        springs.extend(self.springs.clone());
+        springs.extend(self.springs.iter().skip(1).map(|s| s.clone()));
 
         return SpringRow::new(springs);
     }
 }
 
-pub fn count_possible_rows(row: &SpringRow, sequence: &Sequence) -> usize {
-    return get_possible_rows(row, sequence).len();
-}
-
-pub fn get_possible_rows(
+pub fn count_possible_rows(
     row: &SpringRow,
     sequence: &Sequence,
-) -> Vec<SpringRow> {
-    let mut pending: Vec<SpringRow> = vec![row.clone()];
-    let mut results: Vec<SpringRow> = vec![];
+    memo: &mut HashMap<(SpringRow, Sequence), usize>,
+) -> usize {
+    let key = (row.clone(), sequence.clone());
 
-    while !pending.is_empty() {
-        let row = pending.pop().unwrap();
+    if memo.contains_key(&key) {
+        return *memo.get(&key).unwrap();
+    } else {
+        let result = force_count_possible_rows(row, sequence, memo);
 
-        if !row.is_done() {
-            let next = row.fill_next();
+        memo.insert(key, result);
 
-            if next.0.get_sequence().is_partial(sequence) {
-                pending.push(next.0);
-            }
+        return result;
+    }
+}
 
-            if next.1.get_sequence().is_partial(sequence) {
-                pending.push(next.1);
-            }
-        } else if row.get_sequence() == *sequence {
-            results.push(row);
+fn force_count_possible_rows(
+    row: &SpringRow,
+    sequence: &Sequence,
+    memo: &mut HashMap<(SpringRow, Sequence), usize>,
+) -> usize {
+    // had to find this online, too complicated for my brain to find
+    // the recursive solution. Spent 2-3 days on this.
+
+    if row.len() == 0 && sequence.len() == 0 {
+        return 1;
+    } else if row.len() == 0 && sequence.len() != 0 {
+        return 0;
+    } else if sequence.len() == 0 {
+        if row.springs.iter().any(|s| *s == SpringType::Damaged) {
+            return 0;
+        } else {
+            return 1;
         }
     }
 
-    return results;
+    let too_small = row.len() < sequence.sum() + sequence.len() - 1;
+
+    if too_small {
+        return 0;
+    }
+
+    let first = *row.springs.first().unwrap();
+    if first == SpringType::Operational {
+        return count_possible_rows(&row.skip_first(), sequence, memo);
+    }
+
+    if first == SpringType::Damaged {
+        let count = sequence.first().unwrap();
+        let remaining = sequence.skip_first();
+
+        let not_enough_damaged_possible = row.springs[0..count]
+            .iter()
+            .any(|s| *s == SpringType::Operational);
+        let too_many_damaged = row.springs.len() > count
+            && row.springs[count] == SpringType::Damaged;
+
+        if not_enough_damaged_possible || too_many_damaged {
+            return 0;
+        }
+
+        return count_possible_rows(&row.skip(count + 1), &remaining, memo);
+    }
+
+    return count_possible_rows(
+        &row.set_first(SpringType::Damaged),
+        sequence,
+        memo,
+    ) + count_possible_rows(
+        &row.set_first(SpringType::Operational),
+        sequence,
+        memo,
+    );
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -138,7 +136,7 @@ impl FromStr for SpringRow {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub enum SpringType {
     Operational,
     Damaged,
