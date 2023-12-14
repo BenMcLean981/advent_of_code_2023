@@ -118,8 +118,6 @@ pub fn get_possible_rows(
             }
         } else if row.get_sequence() == *sequence {
             results.push(row);
-        } else {
-            assert!(true);
         }
     }
 

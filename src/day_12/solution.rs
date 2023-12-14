@@ -1,3 +1,5 @@
+use rayon::prelude::*;
+
 use std::{cmp, str::FromStr};
 
 use crate::utils::file_utils::read_lines;
@@ -14,7 +16,7 @@ pub fn solve() {
 
     let sum: usize = lines.iter().map(|l| get_num_possible(l)).sum();
     let unfolded: usize =
-        lines.iter().map(|l| get_num_possible_unfolded(l)).sum();
+        lines.par_iter().map(|l| get_num_possible_unfolded(l)).sum();
 
     println!("Day 12");
     println!("The number of possible spring arrangements is {sum}.");
