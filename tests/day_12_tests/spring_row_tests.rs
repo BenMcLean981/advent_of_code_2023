@@ -105,5 +105,5 @@ pub fn count_possible_rows_counts_rows() {
     let row = SpringRow::from_str("?###????????").unwrap();
     let sequence = Sequence::make_clear(vec![3, 2, 1]);
 
-    assert_eq!(10, count_possible_rows(row, &sequence));
+    assert_eq!(10, count_possible_rows(&row, &sequence));
 }

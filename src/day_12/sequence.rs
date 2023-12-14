@@ -44,6 +44,16 @@ impl Sequence {
             return self.sequence == sub;
         }
     }
+
+    pub fn expand(&self, count: usize) -> Sequence {
+        let mut result: Vec<usize> = self.sequence.clone();
+
+        for _ in 0..count - 1 {
+            result.extend(self.sequence.clone())
+        }
+
+        return Sequence::make_clear(result);
+    }
 }
 
 #[derive(Debug, PartialEq, Eq)]

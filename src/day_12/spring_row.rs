@@ -12,6 +12,16 @@ impl SpringRow {
         return SpringRow { springs };
     }
 
+    pub fn merge(sequences: Vec<&SpringRow>) -> Self {
+        let mut springs: Vec<SpringType> = vec![];
+
+        for s in sequences {
+            springs.extend(s.springs.clone())
+        }
+
+        return SpringRow::new(springs);
+    }
+
     pub fn get_sequence(&self) -> Sequence {
         let before_unknown = self
             .springs
@@ -66,11 +76,32 @@ impl SpringRow {
 
         return SpringRow::new(result);
     }
+
+    pub fn append(&self) -> Self {
+        let mut springs = self.springs.clone();
+        springs.push(SpringType::Unknown);
+
+        return SpringRow::new(springs);
+    }
+
+    pub fn prepend(&self) -> Self {
+        let mut springs = vec![SpringType::Unknown];
+        springs.extend(self.springs.clone());
+
+        return SpringRow::new(springs);
+    }
 }
 
-pub fn count_possible_rows(row: SpringRow, sequence: &Sequence) -> usize {
-    let mut pending: Vec<SpringRow> = vec![row];
-    let mut valid: Vec<SpringRow> = vec![];
+pub fn count_possible_rows(row: &SpringRow, sequence: &Sequence) -> usize {
+    return get_possible_rows(row, sequence).len();
+}
+
+pub fn get_possible_rows(
+    row: &SpringRow,
+    sequence: &Sequence,
+) -> Vec<SpringRow> {
+    let mut pending: Vec<SpringRow> = vec![row.clone()];
+    let mut results: Vec<SpringRow> = vec![];
 
     while !pending.is_empty() {
         let row = pending.pop().unwrap();
@@ -86,13 +117,13 @@ pub fn count_possible_rows(row: SpringRow, sequence: &Sequence) -> usize {
                 pending.push(next.1);
             }
         } else if row.get_sequence() == *sequence {
-            valid.push(row);
+            results.push(row);
         } else {
             assert!(true);
         }
     }
 
-    return valid.len();
+    return results;
 }
 
 #[derive(Debug, PartialEq, Eq)]
