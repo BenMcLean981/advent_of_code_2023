@@ -11,3 +11,4 @@ pub mod day_10_tests;
 pub mod day_11_tests;
 pub mod day_12_tests;
 pub mod day_13_tests;
+pub mod day_14_tests;
