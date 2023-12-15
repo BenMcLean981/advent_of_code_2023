@@ -2,7 +2,7 @@ use std::cmp;
 
 use crate::day_11::universe::transpose;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Reflection {
     rows: Vec<Vec<Item>>,
     cols: Vec<Vec<Item>>,
@@ -29,17 +29,43 @@ impl Reflection {
         return Reflection::new(rows);
     }
 
-    pub fn find_mirror(&self) -> Mirror {
+    pub fn find_mirror(&self) -> Option<Mirror> {
         let col = self.find_mirrored_col();
         let row = self.find_mirrored_row();
 
         if col.is_some() {
-            return Mirror::Vertical(col.unwrap());
+            return Some(Mirror::Vertical(col.unwrap()));
         } else if row.is_some() {
-            return Mirror::Horizontal(row.unwrap());
+            return Some(Mirror::Horizontal(row.unwrap()));
         } else {
-            panic!();
+            return None;
         }
+    }
+
+    pub fn find_mirror_with_override(
+        &self,
+        wrong_answer: &Mirror,
+    ) -> Option<Mirror> {
+        let col = self.find_mirrored_col_with_override(wrong_answer);
+        let row = self.find_mirrored_row_with_override(wrong_answer);
+
+        if col.is_some() {
+            return Some(Mirror::Vertical(col.unwrap()));
+        } else if row.is_some() {
+            return Some(Mirror::Horizontal(row.unwrap()));
+        } else {
+            return None;
+        }
+    }
+
+    fn find_mirrored_col_with_override(
+        &self,
+        wrong_answer: &Mirror,
+    ) -> Option<usize> {
+        return (1..=self.cols.len()).find(|col| {
+            self.is_mirror_after_col(*col)
+                && Mirror::Vertical(*col) != *wrong_answer
+        });
     }
 
     pub fn find_mirrored_col(&self) -> Option<usize> {
@@ -63,6 +89,16 @@ impl Reflection {
         return self.cols[col1 - 1] == self.cols[col2 - 1];
     }
 
+    fn find_mirrored_row_with_override(
+        &self,
+        wrong_answer: &Mirror,
+    ) -> Option<usize> {
+        return (1..=self.rows.len()).find(|row| {
+            self.is_mirror_after_row(*row)
+                && Mirror::Horizontal(*row) != *wrong_answer
+        });
+    }
+
     pub fn find_mirrored_row(&self) -> Option<usize> {
         return (1..=self.rows.len())
             .find(|row| self.is_mirror_after_row(*row));
@@ -83,6 +119,27 @@ impl Reflection {
     pub fn are_rows_mirroed(&self, row1: usize, row2: usize) -> bool {
         return self.rows[row1 - 1] == self.rows[row2 - 1];
     }
+
+    pub fn make_alternatives(&self) -> Vec<Reflection> {
+        let mut results: Vec<Reflection> = vec![];
+
+        for i in 1..=self.rows.len() {
+            for j in 1..=self.cols.len() {
+                results.push(self.flip(i, j))
+            }
+        }
+
+        return results;
+    }
+
+    fn flip(&self, row: usize, col: usize) -> Self {
+        let mut rows = self.rows.clone();
+        let current = self.rows[row - 1][col - 1];
+
+        rows[row - 1][col - 1] = current.flip();
+
+        return Reflection::new(rows);
+    }
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -101,7 +158,16 @@ impl From<char> for Item {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+impl Item {
+    pub fn flip(&self) -> Self {
+        match self {
+            Item::Ash => Item::Rock,
+            Item::Rock => Item::Ash,
+        }
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Mirror {
     Horizontal(usize),
     Vertical(usize),

@@ -211,7 +211,35 @@ pub fn find_mirror_finds_row() {
         "#....#..#",
     ]);
 
-    assert_eq!(Mirror::Horizontal(4), reflection.find_mirror());
+    assert_eq!(Some(Mirror::Horizontal(4)), reflection.find_mirror());
+}
+
+#[test]
+pub fn find_mirror_with_override() {
+    let reflection = Reflection::from_lines(vec![
+        "#...##...#..#.#..",
+        "#...##...#..#.#..",
+        ".#.#...#.#....#..",
+        "#.#..#.##..##.#.#",
+        "#..###.#..#..#...",
+        "###.#####.##.#.#.",
+        "##############..#",
+        "#.....#######..#.",
+        "..##..##.####..##",
+        "#.####..##.#..#.#",
+        "#.####..##.#..#.#",
+        "..##..##.####..##",
+        "#.....#######..#.",
+        "##############..#",
+        "###.#####.##.#.#.",
+        "#..###.#..#..#...",
+        "#.#..#.##..##.#.#",
+    ]);
+
+    assert_eq!(
+        Some(Mirror::Horizontal(10)),
+        reflection.find_mirror_with_override(&Mirror::Horizontal(1))
+    );
 }
 
 #[test]
@@ -226,5 +254,5 @@ pub fn find_mirror_finds_col() {
         "#.#.##.#.",
     ]);
 
-    assert_eq!(Mirror::Vertical(5), reflection.find_mirror());
+    assert_eq!(Some(Mirror::Vertical(5)), reflection.find_mirror());
 }
