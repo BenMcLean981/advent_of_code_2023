@@ -10,4 +10,3 @@ doctest = false
 
 [dependencies]
 num-bigfloat = "1"
-rayon = "1"
