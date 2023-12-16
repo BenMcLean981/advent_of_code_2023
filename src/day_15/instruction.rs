@@ -1,3 +1,5 @@
+use std::hash::Hash;
+use std::hash::{BuildHasher, Hasher};
 use std::str::FromStr;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -14,6 +16,13 @@ impl Instruction {
             label: label.to_string(),
             operation,
         };
+    }
+
+    pub fn compute_hash(&self) -> u64 {
+        let mut hasher = self.build_hasher();
+        self.hash(&mut hasher);
+
+        return hasher.finish();
     }
 }
 
@@ -56,5 +65,35 @@ impl FromStr for Operation {
             )),
             _ => panic!(),
         }
+    }
+}
+
+impl BuildHasher for Instruction {
+    type Hasher = InstructionHasher;
+
+    fn build_hasher(&self) -> Self::Hasher {
+        return InstructionHasher {
+            hash: super::hash::hash(&self.rep),
+        };
+    }
+}
+
+pub struct InstructionHasher {
+    hash: u64,
+}
+
+impl Hasher for InstructionHasher {
+    fn finish(&self) -> u64 {
+        return self.hash;
+    }
+
+    fn write(&mut self, _: &[u8]) {
+        return;
+    }
+}
+
+impl Hash for Instruction {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.rep.hash(state);
     }
 }
