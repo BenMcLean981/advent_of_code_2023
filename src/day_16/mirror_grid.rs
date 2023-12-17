@@ -1,5 +1,6 @@
-use std::collections::HashSet;
+use std::{cmp, collections::HashSet};
 
+#[derive(Clone)]
 pub struct MirrorGrid {
     rows: Vec<Vec<OpticalOperator>>,
     beams: Vec<Beam>,
@@ -10,7 +11,7 @@ impl MirrorGrid {
     pub fn new(rows: Vec<Vec<OpticalOperator>>) -> Self {
         return MirrorGrid {
             rows,
-            beams: vec![Beam::new(Direction::Right, Position::new(0, 0))],
+            beams: vec![],
             simulated: HashSet::<Beam>::new(),
         };
     }
@@ -25,7 +26,60 @@ impl MirrorGrid {
         return MirrorGrid::new(rows);
     }
 
-    pub fn simulate(&mut self) {
+    pub fn count_best_energized(&self) -> usize {
+        let mut best = 0;
+
+        for row in 0..self.rows.len() {
+            let right = self.count_energized_for_beam(self.make_right(row));
+            let left = self.count_energized_for_beam(self.make_left(row));
+
+            best = cmp::max(best, right);
+            best = cmp::max(best, left);
+        }
+
+        for col in 0..self.rows[0].len() {
+            let up = self.count_energized_for_beam(self.make_up(col));
+            let down = self.count_energized_for_beam(self.make_down(col));
+
+            best = cmp::max(best, down);
+            best = cmp::max(best, up);
+        }
+
+        return best;
+    }
+
+    fn make_right(&self, row: usize) -> Beam {
+        return Beam::new(Direction::Right, Position::new(row as i32, 0));
+    }
+
+    fn make_left(&self, row: usize) -> Beam {
+        return Beam::new(
+            Direction::Left,
+            Position::new(row as i32, self.rows[0].len() as i32 - 1),
+        );
+    }
+
+    fn make_down(&self, col: usize) -> Beam {
+        return Beam::new(Direction::Down, Position::new(0 as i32, col as i32));
+    }
+
+    fn make_up(&self, col: usize) -> Beam {
+        return Beam::new(
+            Direction::Up,
+            Position::new(self.rows.len() as i32 - 1, col as i32),
+        );
+    }
+
+    fn count_energized_for_beam(&self, beam: Beam) -> usize {
+        let mut grid = MirrorGrid::new(self.rows.clone());
+        grid.simulate(beam);
+
+        return grid.count_energized();
+    }
+
+    pub fn simulate(&mut self, beam: Beam) {
+        self.beams.push(beam);
+
         while self.beams.len() > 0 {
             let beam = self.beams[0].clone();
             self.beams.remove(0); // always remove, we are going to make new beam(s)
@@ -146,7 +200,7 @@ impl From<char> for OpticalOperator {
 }
 
 #[derive(PartialEq, Eq, Clone, Copy, Hash)]
-struct Beam {
+pub struct Beam {
     direction: Direction,
     position: Position,
 }
@@ -168,7 +222,7 @@ impl Beam {
 }
 
 #[derive(PartialEq, Eq, Clone, Copy, Hash)]
-enum Direction {
+pub enum Direction {
     Up,
     Down,
     Left,
@@ -204,7 +258,7 @@ impl Direction {
 }
 
 #[derive(PartialEq, Eq, Clone, Copy, Hash)]
-struct Position {
+pub struct Position {
     row: i32,
     col: i32,
 }
