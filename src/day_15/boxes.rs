@@ -1,5 +1,3 @@
-use std::ops::Index;
-
 use super::instruction::{Instruction, Operation};
 
 pub struct Boxes {
