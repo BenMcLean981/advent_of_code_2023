@@ -1,5 +1,8 @@
 use crate::{
-    day_16::mirror_grid::{Beam, Direction, MirrorGrid, Position},
+    day_16::{
+        beam::Beam, direction::Direction, mirror_grid::MirrorGrid,
+        position::Position,
+    },
     utils::file_utils::read_lines,
 };
 

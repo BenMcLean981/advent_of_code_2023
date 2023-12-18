@@ -1,5 +1,10 @@
 use std::{cmp, collections::HashSet};
 
+use super::{
+    beam::Beam, direction::Direction, optical_operator::OpticalOperator,
+    position::Position,
+};
+
 #[derive(Clone)]
 pub struct MirrorGrid {
     rows: Vec<Vec<OpticalOperator>>,
@@ -134,146 +139,5 @@ impl MirrorGrid {
             .map(|b| b.position)
             .collect::<HashSet<Position>>()
             .len();
-    }
-}
-
-#[derive(PartialEq, Eq, Clone, Copy)]
-pub enum OpticalOperator {
-    None,
-    HorizontalSplitter,
-    VerticalSplitter,
-    DownwardsMirror,
-    UpwardsMirror,
-}
-
-impl OpticalOperator {
-    fn should_split(&self, beam: &Beam) -> bool {
-        return beam.direction.is_horizontal()
-            && *self == OpticalOperator::VerticalSplitter
-            || beam.direction.is_vertical()
-                && *self == OpticalOperator::HorizontalSplitter;
-    }
-
-    fn split(&self, beam: &Beam) -> (Beam, Beam) {
-        match self {
-            OpticalOperator::HorizontalSplitter => (
-                Beam::new(Direction::Left, beam.position),
-                Beam::new(Direction::Right, beam.position),
-            ),
-            OpticalOperator::VerticalSplitter => (
-                Beam::new(Direction::Up, beam.position),
-                Beam::new(Direction::Down, beam.position),
-            ),
-            _ => panic!(),
-        }
-    }
-
-    fn is_mirror(&self) -> bool {
-        return *self == OpticalOperator::DownwardsMirror
-            || *self == OpticalOperator::UpwardsMirror;
-    }
-
-    fn rotate(&self, beam: &Beam) -> Beam {
-        match *self {
-            OpticalOperator::DownwardsMirror => {
-                Beam::new(beam.direction.rotate_downwards(), beam.position)
-            }
-            OpticalOperator::UpwardsMirror => {
-                Beam::new(beam.direction.rotate_upwards(), beam.position)
-            }
-            _ => panic!(),
-        }
-    }
-}
-
-impl From<char> for OpticalOperator {
-    fn from(value: char) -> Self {
-        return match value {
-            '.' => OpticalOperator::None,
-            '|' => OpticalOperator::VerticalSplitter,
-            '-' => OpticalOperator::HorizontalSplitter,
-            '\\' => OpticalOperator::DownwardsMirror,
-            '/' => OpticalOperator::UpwardsMirror,
-            _ => panic!(),
-        };
-    }
-}
-
-#[derive(PartialEq, Eq, Clone, Copy, Hash)]
-pub struct Beam {
-    direction: Direction,
-    position: Position,
-}
-
-impl Beam {
-    pub fn new(direction: Direction, position: Position) -> Self {
-        return Beam {
-            direction,
-            position,
-        };
-    }
-
-    pub fn translate(&self) -> Self {
-        return Beam::new(
-            self.direction,
-            self.position.translate(self.direction),
-        );
-    }
-}
-
-#[derive(PartialEq, Eq, Clone, Copy, Hash)]
-pub enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
-}
-
-impl Direction {
-    pub fn rotate_downwards(&self) -> Self {
-        match self {
-            Direction::Up => Direction::Left,
-            Direction::Down => Direction::Right,
-            Direction::Right => Direction::Down,
-            Direction::Left => Direction::Up,
-        }
-    }
-
-    pub fn rotate_upwards(&self) -> Self {
-        match self {
-            Direction::Up => Direction::Right,
-            Direction::Down => Direction::Left,
-            Direction::Right => Direction::Up,
-            Direction::Left => Direction::Down,
-        }
-    }
-
-    pub fn is_horizontal(&self) -> bool {
-        return *self == Direction::Left || *self == Direction::Right;
-    }
-
-    pub fn is_vertical(&self) -> bool {
-        return *self == Direction::Up || *self == Direction::Down;
-    }
-}
-
-#[derive(PartialEq, Eq, Clone, Copy, Hash)]
-pub struct Position {
-    row: i32,
-    col: i32,
-}
-
-impl Position {
-    pub fn new(row: i32, col: i32) -> Self {
-        return Position { row, col };
-    }
-
-    pub fn translate(&self, direction: Direction) -> Self {
-        match direction {
-            Direction::Up => Position::new(self.row - 1, self.col),
-            Direction::Down => Position::new(self.row + 1, self.col),
-            Direction::Left => Position::new(self.row, self.col - 1),
-            Direction::Right => Position::new(self.row, self.col + 1),
-        }
     }
 }
