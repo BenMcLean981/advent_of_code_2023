@@ -16,6 +16,14 @@ impl Path {
         };
     }
 
+    pub fn from_positions(positions: Vec<Position>) -> Self {
+        // first one should be (0, 0)
+
+        return positions.iter().skip(1).fold(Path::new(), |path, p| {
+            path.move_by(Direction::make_delta(path.get_current(), *p))
+        });
+    }
+
     pub fn move_by(&self, d: Direction) -> Path {
         let mut result = self.clone();
 
@@ -25,8 +33,8 @@ impl Path {
         return result;
     }
 
-    pub fn get_current(&self) -> &Position {
-        return self.positions.last().unwrap();
+    pub fn get_current(&self) -> Position {
+        return *self.positions.last().unwrap();
     }
 
     pub fn can_move(&self, d: Direction) -> bool {
@@ -41,7 +49,7 @@ impl Path {
         if last_3.len() != 1 {
             return true;
         } else {
-            return last_3.contains(&d);
+            return !last_3.contains(&d);
         }
     }
 }

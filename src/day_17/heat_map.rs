@@ -1,5 +1,6 @@
 use super::{direction::Direction, path::Path, position::Position};
 
+#[derive(Clone)]
 pub struct HeatMap {
     rows: Vec<Vec<u32>>,
 }
@@ -13,10 +14,26 @@ impl HeatMap {
         let rows = lines.iter().map(|l| read_line(l)).collect();
 
         fn read_line(l: &str) -> Vec<u32> {
-            return l.chars().map(u32::from).collect();
+            return l.chars().map(|c| c.to_digit(10).unwrap()).collect();
         }
 
         return HeatMap { rows };
+    }
+
+    pub fn get_positions(&self) -> Vec<Position> {
+        let mut positions: Vec<Position> = vec![];
+
+        for (i, row) in self.rows.iter().enumerate() {
+            for (j, _) in row.iter().enumerate() {
+                positions.push(Position::new(i, j));
+            }
+        }
+
+        return positions;
+    }
+
+    pub fn get_total_loss(&self, path: Path) -> u32 {
+        return path.positions.iter().map(|p| self.get_heat_loss(*p)).sum();
     }
 
     pub fn get_heat_loss(&self, position: Position) -> u32 {
@@ -84,6 +101,10 @@ impl HeatMap {
         }
 
         return None;
+    }
+
+    pub fn get_bot_right(&self) -> Position {
+        return Position::new(self.rows.len() - 1, self.rows[0].len() - 1);
     }
 }
 

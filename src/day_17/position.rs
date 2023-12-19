@@ -1,6 +1,6 @@
 use super::direction::Direction;
 
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Position {
     pub row: usize,
     pub col: usize,
