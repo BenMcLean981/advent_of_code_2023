@@ -106,6 +106,38 @@ impl HeatMap {
     pub fn get_bot_right(&self) -> Position {
         return Position::new(self.rows.len() - 1, self.rows[0].len() - 1);
     }
+
+    pub fn debug_path(&self, path: Path) {
+        for (i, row) in self.rows.iter().enumerate() {
+            let mut chars: Vec<char> = vec![];
+
+            for (j, _) in row.iter().enumerate() {
+                let pos = Position::new(i, j);
+
+                let d = path.get_direction_before(pos);
+
+                if let Some(d) = d {
+                    chars.push(to_char(d))
+                } else {
+                    chars.push(
+                        char::from_digit(self.get_heat_loss(pos), 10).unwrap(),
+                    )
+                }
+            }
+
+            let line = chars.iter().collect::<String>();
+            println!("{line}");
+        }
+    }
+}
+
+fn to_char(d: Direction) -> char {
+    match d {
+        Direction::Right => '>',
+        Direction::Down => 'v',
+        Direction::Up => '^',
+        Direction::Left => '<',
+    }
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]

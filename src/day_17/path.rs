@@ -52,4 +52,14 @@ impl Path {
             return !last_3.contains(&d);
         }
     }
+
+    pub fn get_direction_before(&self, p: Position) -> Option<Direction> {
+        for (i, pos) in self.positions.iter().enumerate() {
+            if *pos == p && i != 0 {
+                return Some(self.directions[i - 1]);
+            }
+        }
+
+        return None;
+    }
 }

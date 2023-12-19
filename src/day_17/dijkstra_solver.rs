@@ -42,7 +42,10 @@ impl DijsktraSolver {
             self.vertices.remove(&u);
 
             if u == destination {
-                return self.make_path(destination);
+                let path = self.make_path(destination);
+                self.map.debug_path(path.clone());
+
+                return path;
             }
 
             let path = &self.make_path(u);
