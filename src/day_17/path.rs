@@ -38,6 +38,18 @@ impl Path {
     }
 
     pub fn can_move(&self, d: Direction) -> bool {
+        let last = self.directions.last();
+
+        if let Some(last) = last {
+            if last.get_opposite() == d {
+                return false;
+            }
+        }
+
+        if self.directions.len() < 3 {
+            return true;
+        }
+
         let last_3 = self
             .directions
             .iter()
@@ -61,5 +73,23 @@ impl Path {
         }
 
         return None;
+    }
+
+    pub fn is_done(&self) -> bool {
+        let last = self.directions.last();
+
+        if self.directions.len() == 3 {
+            return true;
+        }
+
+        let last_3 = self
+            .directions
+            .iter()
+            .rev()
+            .take(3)
+            .copied()
+            .collect::<HashSet<Direction>>();
+
+        return last_3.len() == 1;
     }
 }

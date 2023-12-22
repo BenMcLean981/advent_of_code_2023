@@ -1,6 +1,6 @@
 use super::position::Position;
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash, PartialOrd, Ord)]
 pub enum Direction {
     Right,
     Down,
@@ -28,6 +28,15 @@ impl Direction {
             return Direction::Right;
         } else {
             return Direction::Left;
+        }
+    }
+
+    pub fn get_opposite(&self) -> Self {
+        match self {
+            Direction::Right => Direction::Left,
+            Direction::Down => Direction::Up,
+            Direction::Up => Direction::Down,
+            Direction::Left => Direction::Right,
         }
     }
 }

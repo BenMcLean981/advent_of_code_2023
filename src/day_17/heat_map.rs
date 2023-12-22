@@ -33,7 +33,13 @@ impl HeatMap {
     }
 
     pub fn get_total_loss(&self, path: Path) -> u32 {
-        return path.positions.iter().map(|p| self.get_heat_loss(*p)).sum();
+        let losses = path
+            .positions
+            .iter()
+            .map(|p| self.get_heat_loss(*p))
+            .collect::<Vec<u32>>();
+
+        return losses.iter().sum();
     }
 
     pub fn get_heat_loss(&self, position: Position) -> u32 {
@@ -140,7 +146,7 @@ fn to_char(d: Direction) -> char {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, PartialOrd, Ord)]
 pub struct Edge {
     pub direction: Direction,
     pub loss: u32,

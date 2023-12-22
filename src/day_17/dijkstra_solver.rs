@@ -1,102 +1,113 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
-use crate::day_17::heat_map::{Edge, HeatMap};
+use crate::day_17::heat_map::HeatMap;
 
-use super::{path::Path, position::Position};
+use super::{heat_map::Edge, path::Path, position::Position};
 
 pub struct DijsktraSolver {
     map: HeatMap,
     losses: HashMap<Position, u32>,
-    prevs: HashMap<Position, Option<Position>>,
-    vertices: HashSet<Position>,
+    paths: HashMap<Position, Path>,
+    vertices: Vec<Position>,
 }
 
 impl DijsktraSolver {
     pub fn new(map: HeatMap) -> DijsktraSolver {
         let source = Position::new(0, 0);
 
-        let mut prevs = HashMap::<Position, Option<Position>>::new();
+        let mut paths = HashMap::<Position, Path>::new();
 
         let mut losses = HashMap::<Position, u32>::new();
 
         for pos in map.get_positions() {
             losses.insert(pos, u32::MAX);
-            prevs.insert(pos, None);
         }
 
-        losses.insert(source, map.get_heat_loss(source));
+        paths.insert(source, Path::from_positions(vec![source]));
+        losses.insert(source, 0);
 
         let vertices = map.get_positions().iter().copied().collect();
 
         return DijsktraSolver {
             map,
             losses,
-            prevs,
+            paths,
             vertices,
         };
     }
 
     pub fn solve(&mut self, destination: Position) -> Path {
         while !self.vertices.is_empty() {
-            let u = self.find_min();
-            self.vertices.remove(&u);
+            let u = self.pop_min();
 
             if u == destination {
-                let path = self.make_path(destination);
-                self.map.debug_path(path.clone());
-
-                return path;
+                return self.get_path(destination).clone();
             }
 
-            let path = &self.make_path(u);
-
-            let edges = self.map.get_edges(path);
-
-            for edge in edges {
-                let added = path.move_by(edge.direction);
-                let v = added.get_current();
-
-                let u_loss = self.losses.get(&u).unwrap();
-                let new_loss = u_loss + edge.loss;
-
-                if new_loss < *self.losses.get(&v).unwrap() {
-                    self.losses.insert(v, new_loss);
-                    self.prevs.insert(v, Some(u));
-                }
-            }
+            self.add_adjacents(u);
         }
 
         panic!("No path found.");
     }
 
-    fn make_path(&self, position: Position) -> Path {
-        let mut positions = vec![position];
+    fn add_adjacents(&mut self, u: Position) {
+        let path = self.get_path(u);
+        let edges = self.map.get_edges(&path);
 
-        let mut prev = self.prevs.get(positions.last().unwrap()).unwrap();
-
-        while let Some(next) = prev {
-            positions.insert(0, *next);
-
-            let current = positions.first().unwrap();
-            prev = self.prevs.get(current).unwrap();
+        for edge in edges {
+            self.process_edge(edge, u);
         }
-
-        return Path::from_positions(positions);
     }
 
-    fn find_min(&self) -> Position {
-        let mut pos = *self.vertices.iter().nth(0).unwrap();
-        let mut min = *self.losses.get(&pos).unwrap();
+    fn process_edge(&mut self, edge: Edge, from: Position) {
+        let path = self.get_path(from);
 
-        for v in self.vertices.iter() {
-            let loss = *self.losses.get(v).unwrap();
+        let new_path = path.move_by(edge.direction);
+        let to = new_path.get_current();
 
-            if loss < min {
-                min = loss;
-                pos = *v;
-            }
+        let u_loss = self.losses.get(&from).unwrap();
+        let new_loss = u_loss + edge.loss;
+
+        let old_loss = *self.losses.get(&to).unwrap();
+
+        if new_loss <= old_loss {
+            self.losses.insert(to, new_loss);
+            self.paths.insert(to, new_path);
+        }
+    }
+
+    fn pop_min(&mut self) -> Position {
+        self.order_vertices();
+
+        let result = *self.vertices.first().unwrap();
+
+        if self.paths.get(&result).is_none() {
+            panic!();
         }
 
-        return pos;
+        self.vertices.remove(0);
+        return result;
     }
+
+    fn order_vertices(&mut self) {
+        let mut vertices = self.vertices.clone();
+
+        vertices.sort_by(|p1, p2| self.get_loss(p1).cmp(&self.get_loss(p2)));
+
+        self.vertices = vertices;
+    }
+
+    fn get_path(&self, position: Position) -> &Path {
+        return self.paths.get(&position).unwrap();
+    }
+
+    fn get_loss(&self, p: &Position) -> u32 {
+        return *self.losses.get(p).unwrap();
+    }
+}
+
+struct State {
+    position: Position,
+    loss: usize,
+    path: Option<Path>,
 }

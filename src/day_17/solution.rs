@@ -15,6 +15,8 @@ pub fn solve() {
     let mut solver = DijsktraSolver::new(heat_map.clone());
 
     let path = solver.solve(destination);
+    heat_map.debug_path(path.clone());
+
     let loss = heat_map.get_total_loss(path);
 
     println!("Day 17");
