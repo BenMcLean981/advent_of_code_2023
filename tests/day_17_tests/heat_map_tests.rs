@@ -38,7 +38,6 @@ pub fn get_edges_top_one_move_returns_three_options() {
 
     let expected = vec![
         Edge::new(Direction::Right, 3),
-        Edge::new(Direction::Left, 1),
         Edge::new(Direction::Down, 7),
     ];
 
@@ -61,7 +60,6 @@ pub fn get_edges_top_two_moves_returns_three_options() {
 
     let expected = vec![
         Edge::new(Direction::Right, 4),
-        Edge::new(Direction::Left, 2),
         Edge::new(Direction::Down, 8),
     ];
 
@@ -83,8 +81,7 @@ pub fn get_edges_top_three_moves_returns_two_options() {
 
     let edges = heat_map.get_edges(&path);
 
-    let expected =
-        vec![Edge::new(Direction::Left, 3), Edge::new(Direction::Down, 9)];
+    let expected = vec![Edge::new(Direction::Down, 9)];
 
     assert!(have_same_items(expected, edges));
 }
