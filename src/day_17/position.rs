@@ -2,12 +2,12 @@ use super::direction::Direction;
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Position {
-    pub row: usize,
-    pub col: usize,
+    pub row: i32,
+    pub col: i32,
 }
 
 impl Position {
-    pub fn new(row: usize, col: usize) -> Position {
+    pub fn new(row: i32, col: i32) -> Position {
         return Position { row, col };
     }
 

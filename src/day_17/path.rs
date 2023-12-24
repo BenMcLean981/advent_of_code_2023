@@ -76,8 +76,6 @@ impl Path {
     }
 
     pub fn is_done(&self) -> bool {
-        let last = self.directions.last();
-
         if self.directions.len() == 3 {
             return true;
         }

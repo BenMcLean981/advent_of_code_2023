@@ -28,6 +28,38 @@ pub fn pop_min_removes_initial_state() {
     solver.pop_min();
 }
 
+#[test]
+pub fn add_neighbors_enqueues_neighbors() {
+    let mut solver = make_solver();
+
+    let first = solver.pop_min();
+    solver.add_neighbors(first);
+
+    let second = solver.pop_min();
+    let third = solver.pop_min();
+
+    let expected_second = State {
+        position: Position::new(1, 0),
+        loss: 3,
+        path: Path::from_positions(vec![
+            Position::new(0, 0),
+            Position::new(1, 0),
+        ]),
+    };
+
+    let expected_third = State {
+        position: Position::new(0, 1),
+        loss: 4,
+        path: Path::from_positions(vec![
+            Position::new(0, 0),
+            Position::new(0, 1),
+        ]),
+    };
+
+    assert_eq!(expected_second, second);
+    assert_eq!(expected_third, third);
+}
+
 fn make_solver() -> DijsktraSolver {
     return DijsktraSolver::new(make_heat_map());
 }

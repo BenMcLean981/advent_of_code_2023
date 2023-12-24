@@ -39,4 +39,13 @@ impl Direction {
             Direction::Left => Direction::Right,
         }
     }
+
+    pub fn get_all() -> Vec<Direction> {
+        return vec![
+            Direction::Right,
+            Direction::Down,
+            Direction::Up,
+            Direction::Left,
+        ];
+    }
 }
