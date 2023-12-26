@@ -12,4 +12,8 @@ impl Xy {
     pub fn add(&self, other: &Xy) -> Self {
         return Xy::new(self.x + other.x, self.y + other.y);
     }
+
+    pub fn abs_diff(&self, other: &Xy) -> u32 {
+        return self.x.abs_diff(other.x) + self.y.abs_diff(other.y);
+    }
 }

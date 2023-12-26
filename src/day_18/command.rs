@@ -10,7 +10,7 @@ pub struct Command {
 
 impl Command {
     pub fn to_vector(&self) -> Xy {
-        let distance = self.distance as i32 + 1;
+        let distance = self.distance as i32;
 
         match self.direction {
             Direction::Up => Xy::new(0, distance),
