@@ -10,7 +10,7 @@ impl Polygon {
         return Polygon { points };
     }
 
-    pub fn get_area(&self) -> u32 {
+    pub fn get_area(&self) -> u64 {
         let mut area_2 = 0;
 
         for i in 0..self.points.len() - 1 {
@@ -20,10 +20,10 @@ impl Polygon {
             area_2 += p1.x * p2.y - p1.y * p2.x;
         }
 
-        return area_2.abs() as u32 / 2 + self.get_perimeter() / 2 + 1;
+        return area_2.abs() as u64 / 2 + self.get_perimeter() / 2 + 1;
     }
 
-    pub fn get_perimeter(&self) -> u32 {
+    pub fn get_perimeter(&self) -> u64 {
         let mut result = 0;
 
         for i in 0..self.points.len() - 1 {

@@ -13,19 +13,38 @@ pub fn solve() {
         .iter()
         .map(|s| Command::from_str(*s).unwrap())
         .collect();
-    let polygon = make_polygon(commands);
-    let area = polygon.get_area();
+    let poly_1 = make_polygon_1(&commands);
+    let poly_2 = make_polygon_2(&commands);
+
+    let area_1 = poly_1.get_area();
+    let area_2 = poly_2.get_area();
 
     println!("Day 18");
-    println!("The area of the trench is {area}.");
+    println!("The area of the trench is {area_1}.");
+    println!("The area of the second trench is {area_2}.");
 }
 
-fn make_polygon(commands: Vec<Command>) -> Polygon {
+fn make_polygon_1(commands: &Vec<Command>) -> Polygon {
     let mut points = vec![Xy::new(0, 0)];
 
     for command in commands {
         let last = points.last().unwrap();
-        let vec = command.to_vector();
+        let vec = command.to_vector_1();
+
+        let point = last.add(&vec);
+
+        points.push(point);
+    }
+
+    return Polygon::new(points);
+}
+
+fn make_polygon_2(commands: &Vec<Command>) -> Polygon {
+    let mut points = vec![Xy::new(0, 0)];
+
+    for command in commands {
+        let last = points.last().unwrap();
+        let vec = command.to_vector_2();
 
         let point = last.add(&vec);
 
