@@ -82,8 +82,8 @@ impl Rule {
 
     fn get_range(&self) -> Range {
         match self.operator {
-            Operator::LessThan => Range::new(1, self.quantity),
-            Operator::GreaterThan => Range::new(self.quantity, 4000),
+            Operator::LessThan => Range::new(1, self.quantity - 1),
+            Operator::GreaterThan => Range::new(self.quantity + 1, 4000),
         }
     }
 
@@ -167,7 +167,7 @@ pub enum Destination {
 }
 
 impl Destination {
-    pub fn is_continuing(&self) -> bool {
+    pub fn is_done(&self) -> bool {
         return self == &Destination::Accepted
             || self == &Destination::Rejected;
     }

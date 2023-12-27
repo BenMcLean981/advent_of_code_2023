@@ -60,7 +60,7 @@ impl Range {
         return self.lower <= n && n <= self.upper;
     }
 
-    pub fn size(&self) -> u32 {
-        return self.upper - self.lower;
+    pub fn size(&self) -> u64 {
+        return (self.upper - self.lower + 1) as u64;
     }
 }

@@ -8,7 +8,7 @@ use crate::{
 use super::{part_range::PartRange, rule::Destination};
 
 pub fn solve() {
-    let filename = "src/day_19/sample.txt";
+    let filename = "src/day_19/input.txt";
 
     let lines = read_lines(filename);
     let lines = lines.iter().map(|l| l.as_str()).collect::<Vec<&str>>();
@@ -62,7 +62,7 @@ fn sum_accepted(factory: &Factory, parts: &Vec<Part>) -> u32 {
     return accepted.iter().map(|p| p.x + p.m + p.a + p.s).sum();
 }
 
-fn count_ranges(factory: &Factory) -> u32 {
+fn count_ranges(factory: &Factory) -> u64 {
     let accepted = factory.process_range(&PartRange::full());
 
     return accepted.iter().map(|a| a.count()).sum();

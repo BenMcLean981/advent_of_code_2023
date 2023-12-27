@@ -18,7 +18,7 @@ impl PartRange {
         };
     }
 
-    pub fn count(&self) -> u32 {
-        return self.x.size() & self.m.size() & self.a.size() & self.s.size();
+    pub fn count(&self) -> u64 {
+        return self.x.size() * self.m.size() * self.a.size() * self.s.size();
     }
 }

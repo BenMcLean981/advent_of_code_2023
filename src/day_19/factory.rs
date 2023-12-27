@@ -49,7 +49,7 @@ impl Factory {
     fn process_ranges_at(&self, maps: &Vec<PartRangeMap>) -> Vec<PartRangeMap> {
         let continuing = maps
             .iter()
-            .filter(|m| m.destination.is_continuing())
+            .filter(|m| !m.destination.is_done())
             .collect::<Vec<&PartRangeMap>>();
         let mut accepted = maps
             .iter()
