@@ -2,6 +2,8 @@ use std::str::FromStr;
 
 use super::{
     part::Part,
+    part_range::PartRange,
+    part_range_map::PartRangeMap,
     rule::{Destination, Rule},
 };
 
@@ -20,6 +22,48 @@ impl Workflow {
         }
 
         return &self.default;
+    }
+
+    pub fn process_range(&self, range: PartRange) -> Vec<PartRangeMap> {
+        let mut mapped: Vec<PartRangeMap> = vec![];
+        let mut remainders = vec![range];
+
+        for rule in &self.rules {
+            let mut next_remainders = vec![];
+
+            while !remainders.is_empty() {
+                let r = remainders.pop().unwrap();
+
+                let applied = rule.apply(&r);
+
+                if let Some(applied) = applied.applied {
+                    let next_mapped = PartRangeMap {
+                        range: applied,
+                        destination: rule.destination.clone(),
+                    };
+
+                    mapped.push(next_mapped);
+                } else {
+                    // this rule does not apply to r
+                    next_remainders.push(r);
+                }
+
+                next_remainders.extend(applied.remainders);
+            }
+
+            remainders = next_remainders;
+        }
+
+        for range in remainders {
+            let next_mapped = PartRangeMap {
+                range,
+                destination: self.default.clone(),
+            };
+
+            mapped.push(next_mapped)
+        }
+
+        return mapped;
     }
 }
 

@@ -5,10 +5,10 @@ use crate::{
     utils::file_utils::read_lines,
 };
 
-use super::rule::Destination;
+use super::{part_range::PartRange, rule::Destination};
 
 pub fn solve() {
-    let filename = "src/day_19/input.txt";
+    let filename = "src/day_19/sample.txt";
 
     let lines = read_lines(filename);
     let lines = lines.iter().map(|l| l.as_str()).collect::<Vec<&str>>();
@@ -27,9 +27,11 @@ pub fn solve() {
 
     let factory = Factory::new(workflows);
     let sum_accepted = sum_accepted(&factory, &parts);
+    let count = count_ranges(&factory);
 
     println!("Day 19");
     println!("The sum of qualities of accepted parts is {sum_accepted}.");
+    println!("The number of acceptable parts is {count}.");
 }
 
 fn split_lines(lines: Vec<&str>) -> (Vec<&str>, Vec<&str>) {
@@ -58,4 +60,10 @@ fn sum_accepted(factory: &Factory, parts: &Vec<Part>) -> u32 {
         .collect::<Vec<&Part>>();
 
     return accepted.iter().map(|p| p.x + p.m + p.a + p.s).sum();
+}
+
+fn count_ranges(factory: &Factory) -> u32 {
+    let accepted = factory.process_range(&PartRange::full());
+
+    return accepted.iter().map(|a| a.count()).sum();
 }
