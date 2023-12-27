@@ -58,9 +58,12 @@ fn main() {
     // println!();
     // day_17::solution::solve();
 
-    println!();
-    day_18::solution::solve();
+    // println!();
+    // day_18::solution::solve();
+
+    // println!();
+    // day_19::solution::solve();
 
     println!();
-    day_19::solution::solve();
+    day_20::solution::solve();
 }
