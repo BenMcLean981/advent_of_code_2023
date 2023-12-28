@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use crate::{
     day_8::{direction::Direction, edge::Edge, map::Map},
-    utils::file_utils::read_lines,
+    utils::{file_utils::read_lines, num::multiple_lcm},
 };
 
 pub fn solve() {
@@ -68,26 +68,4 @@ fn count_multiple_directions_followed(
         .collect();
 
     return multiple_lcm(counts);
-}
-
-fn multiple_lcm(nums: Vec<u64>) -> u64 {
-    let mut result = nums[0];
-
-    for num in nums.iter().skip(1) {
-        result = lcm(result, *num);
-    }
-
-    return result;
-}
-
-fn lcm(a: u64, b: u64) -> u64 {
-    return a * b / gcd(a, b);
-}
-
-fn gcd(a: u64, b: u64) -> u64 {
-    if b == 0 {
-        return a;
-    } else {
-        return gcd(b, a % b);
-    }
 }

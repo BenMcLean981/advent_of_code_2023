@@ -5,6 +5,7 @@ use super::modules::{
     module::Module,
 };
 
+#[derive(Clone)]
 pub struct Graph {
     modules: HashMap<String, Rc<RefCell<dyn Module>>>,
 }
@@ -38,6 +39,15 @@ impl Graph {
 
     pub fn get(&self, name: String) -> Option<&Rc<RefCell<dyn Module>>> {
         return self.modules.get(&name);
+    }
+
+    pub fn find_to(&self, name: String) -> Vec<String> {
+        return self
+            .modules
+            .values()
+            .filter(|m| m.borrow().get_targets().contains(&name))
+            .map(|m| m.borrow().get_name().clone())
+            .collect();
     }
 }
 

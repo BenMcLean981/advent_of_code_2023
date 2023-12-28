@@ -24,12 +24,9 @@
 %sk -> nd
 %mh -> xs, sd
 &qz -> nd, sj, sk, gp, gc, vh, zt
-&vg -> bq
 %sh -> pz
 %jh -> kg
-&kp -> bq
 %gp -> zt
-&gc -> bq
 %xf -> xp
 %cv -> sd, hl
 &db -> kg, sp, kp, fx, jh, gz
@@ -51,8 +48,11 @@
 %cn -> sd, sv
 %xs -> sh
 %gb -> lx, dl
-&tx -> bq
 &sd -> mh, tx, sh, xf, zn, xs
 &lx -> fn, hf, vg, lg
 %zs -> db, fx
+&vg -> bq
+&kp -> bq
+&gc -> bq
+&tx -> bq
 broadcaster -> vh, sp, lg, mh
