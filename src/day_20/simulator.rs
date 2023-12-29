@@ -99,7 +99,10 @@ impl Simulator {
                 .any(|p| p.target == name.to_string() && p.signal == signal)
             {
                 if found_offset {
-                    return Cyclic { offset, period };
+                    return Cyclic {
+                        _offset: offset,
+                        period,
+                    };
                 } else {
                     // switch modes
                     found_offset = true;
@@ -115,5 +118,5 @@ impl Simulator {
 
 struct Cyclic {
     period: u64,
-    offset: u64,
+    _offset: u64,
 }
