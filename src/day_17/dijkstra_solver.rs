@@ -2,7 +2,7 @@ use std::collections::BinaryHeap;
 
 use crate::day_17::heat_map::HeatMap;
 
-use super::{direction::Direction, path::Path, position::Position};
+use super::{direction::Direction, position::Position};
 
 pub struct DijsktraSolver {
     map: HeatMap,
@@ -50,7 +50,7 @@ impl DijsktraSolver {
     }
 
     fn add_neighbor_if_better(&mut self, state: State) {
-        let existing = self.queue.iter().find(|p| p.position == state.position);
+        let existing = self.queue.iter().find(|s| s.position == state.position);
 
         if let Some(existing) = existing {
             if state.loss < existing.loss {
@@ -62,16 +62,20 @@ impl DijsktraSolver {
     }
 
     fn add_neighbor(&mut self, state: State) {
-        // self.remove_at(state.position);
+        self.remove_duplicates(&state);
 
         self.queue.push(state);
     }
 
-    fn remove_at(&mut self, p: Position) {
+    fn remove_duplicates(&mut self, state: &State) {
         self.queue = self
             .queue
             .iter()
-            .filter(|s| s.position != p)
+            .filter(|s| {
+                s.position != state.position
+                    || s.direction != state.direction
+                    || s.steps != state.steps
+            })
             .cloned()
             .collect();
     }
@@ -79,7 +83,7 @@ impl DijsktraSolver {
     fn get_directions(&self, state: &State) -> Vec<Direction> {
         return Direction::get_all()
             .iter()
-            .filter(|d| state.path.can_move(**d))
+            .filter(|d| state.can_move(**d))
             .filter(|d| self.map.is_position_valid(state.position.move_by(**d)))
             .copied()
             .collect();
@@ -87,32 +91,55 @@ impl DijsktraSolver {
 
     fn make_neighbor(&self, state: &State, direction: Direction) -> State {
         let position = state.position.move_by(direction);
-        let path = state.path.move_by(direction);
+
+        let steps = if state.direction == direction {
+            state.steps + 1
+        } else {
+            1
+        };
 
         let loss = state.loss + self.map.get_heat_loss(position);
 
         return State {
+            previous: Box::new(Some(state.clone())),
             position,
             loss,
-            path,
+            direction,
+            steps,
         };
     }
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct State {
+    pub previous: Box<Option<State>>,
     pub position: Position,
     pub loss: u32,
-    pub path: Path,
+    pub direction: Direction,
+    pub steps: usize,
 }
 
 impl State {
     pub fn make_initial() -> Self {
         return State {
+            previous: Box::new(None),
             position: Position::new(0, 0),
             loss: 0,
-            path: Path::from_positions(vec![Position::new(0, 0)]),
+            steps: 0,
+            direction: Direction::Down,
         };
+    }
+
+    pub fn can_move(&self, d: Direction) -> bool {
+        if d == self.direction.get_opposite() {
+            return false;
+        }
+
+        if self.direction != d {
+            return true;
+        } else {
+            return self.steps < 3;
+        }
     }
 }
 
