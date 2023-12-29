@@ -63,29 +63,34 @@ impl Graph {
         return current;
     }
 
-    pub fn step_infinitely(&self, times: u32) -> HashSet<Position> {
+    pub fn step_infinitely(&self, times: u32) -> Vec<i32> {
+        let mut result = vec![1];
         let mut current = HashSet::<Position>::new();
         current.insert(self.start);
 
         for _ in 0..times {
             let mut next = HashSet::new();
 
-            for p in current {
+            for p in current.clone() {
                 let neighbors = p.get_neighbors();
                 let possible =
                     neighbors.iter().filter(|n| !self.is_rock_infinitely(n));
                 next.extend(possible);
             }
 
+            result.push(next.len() as i32);
+
             current = next;
         }
 
-        return current;
+        return result;
     }
 
     fn is_rock_infinitely(&self, p: &Position) -> bool {
-        let modded =
-            Position::new(p.row % self.rows as i32, p.col % self.cols as i32);
+        let modded = Position::new(
+            mmod(p.row, self.rows as i32),
+            mmod(p.col, self.cols as i32),
+        );
 
         return self.is_rock(&modded);
     }
@@ -99,4 +104,8 @@ struct Cell {
     position: Position,
     is_rock: bool,
     is_start: bool,
+}
+
+fn mmod(n: i32, m: i32) -> i32 {
+    return ((n % m) + m) % m;
 }
